@@ -1,8 +1,6 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-<script src="~/Scripts/bootstrap.js"></script>
-<script src="~/Scripts/jquery-3.3.1.js"></script>
 <div class="jumbotron">
     <h1>ASP.NET</h1>
     <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
@@ -31,8 +29,10 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-5"> <!--делает так чтобы график был маленьким-->
-        <canvas id="lineChart" width="640" height="480"></canvas>
+    <!--https://www.chartjs.org-->
+    <div class="col-md-5">
+        <!--делает так чтобы график был маленьким-->
+        <canvas id="lineChart" width="800" height="600" class="chartjs-render-monitor"></canvas>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script> <!--для чартов-->
     <script src="~/Scripts/chart.js"></script> <!--фаил где прописана логика для чарта-->
