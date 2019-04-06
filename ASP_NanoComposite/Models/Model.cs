@@ -15,7 +15,27 @@ namespace ASP_NanoComposite.Models//CodeFirst //просто для лучшег
         public DbSet<Project> Projects { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Share> Shares { get; set; }
-        public DbSet<ProjectMaterials> ProjectMaterials { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Project>()
+                .HasMany(u => u.UsedMaterials)
+                .WithMany()
+                .Map(m =>
+                {
+                    m.ToTable("Material");
+                    m.MapLeftKey("ProjectID");
+                    m.MapRightKey("MaterialID");
+                });
+            modelBuilder.Entity<Project>()
+                .HasMany(u => u.SharedTo)
+                .WithMany()
+                .Map(m =>
+                {
+                    m.ToTable("Share");
+                    m.MapLeftKey("ProjectID");
+                    m.MapRightKey("ShareID");
+                });
+        }
     }
     public class SubscriptionModel //модель подписки
     {
@@ -30,6 +50,9 @@ namespace ASP_NanoComposite.Models//CodeFirst //просто для лучшег
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
         public DateTime ProjectDate { get; set; }
+        public virtual User Owner { get; set; }//владелец
+        public virtual ICollection<Share> SharedTo { get; set; }
+        public virtual ICollection<Material> UsedMaterials { get; set; }
     }
     public class User //пользователь
     {
@@ -39,21 +62,15 @@ namespace ASP_NanoComposite.Models//CodeFirst //просто для лучшег
         public string Password { get; set; }
         public virtual SubscriptionModel SubModel { get; set; }
         public string APIKey { get; set; }
+        public bool isVerified { get; set; }
     }
     public class Share
     {
         public int ShareID { get; set; }
-        public virtual Project ProjectToShare { get; set; }
-        public virtual User Owner { get; set; }//владелец
-        public virtual ICollection<User> Shared { get; set; }//кому дает доступ
+        public virtual Project ProjectToShare { get; set; } //TODO: Возможно стоит убрать
+        public virtual User Shared { get; set; }
         public bool isRead { get; set; }
         public bool isWrite { get; set; }
-    }
-    public class ProjectMaterials
-    {
-        public int ProjectMaterialsID { get; set; }
-        public virtual Project Project { get; set; }
-        public virtual ICollection<Material> Material { get; set; }
     }
     public class Material
     {

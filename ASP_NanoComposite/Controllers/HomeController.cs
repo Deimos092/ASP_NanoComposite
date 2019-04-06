@@ -29,35 +29,31 @@ namespace ASP_NanoComposite.Controllers
                 //cont.SubModel.Add(s);
 
                 User user = new User() { Login = "Test", SubModel = new SubscriptionModel() };
-                cont.Users.Add(user);
-                cont.SaveChanges();
-
-                Project project = new Project() { ProjectDate = DateTime.Now, ProjectDescription = "randomDesc", ProjectName = "Test" };
-                cont.Projects.Add(project);
-                cont.SaveChanges();
-
+                User user2 = new User() { Login = "Test222", SubModel = new SubscriptionModel() };
+                Project project = new Project() { ProjectDate = DateTime.Now, ProjectDescription = "randomDesc", ProjectName = "Test", SharedTo = new List<Share>(), UsedMaterials = new List<Material>() };
                 Material material = new Material() { Owner = user, Name = "AnyMaterial" };
-                cont.Materials.Add(material);
-                cont.SaveChanges();
-
                 Material material2 = new Material() { Owner = user, Name = "123" };
+
+                Share share = new Share() { ProjectToShare = project, Shared = user };
+                Share share2 = new Share() { ProjectToShare = project, Shared = user2 };
+
+                project.SharedTo.Add(share);
+                project.SharedTo.Add(share2);
+
+                project.UsedMaterials.Add(material);
+                project.UsedMaterials.Add(material2);
+
+                cont.Users.Add(user);
+                cont.Users.Add(user2);
+                cont.Projects.Add(project);
+                cont.Shares.Add(share);
+                cont.Shares.Add(share2);
+                cont.Materials.Add(material);
                 cont.Materials.Add(material2);
                 cont.SaveChanges();
 
-                ProjectMaterials projectMaterials = new ProjectMaterials() { Material = new List<Material>(), Project = project };
-                projectMaterials.Material.Add(material);
-                projectMaterials.Material.Add(material2);
-                cont.ProjectMaterials.Add(projectMaterials);
-                cont.SaveChanges();
-
-                Share share = new Share() { Owner = user, Shared = new List<User>(), ProjectToShare = project };
-                cont.Shares.Add(share);
-                cont.SaveChanges();
-
-
-
-
-
+                //var proj = cont.Projects.First();
+                //var t = proj.UsedMaterials;
             }
             return View();
 		}
