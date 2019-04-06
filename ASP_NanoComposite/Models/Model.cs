@@ -37,27 +37,28 @@ namespace ASP_NanoComposite.Models//CodeFirst //просто для лучшег
         public string Login { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public SubscriptionModel SubModel { get; set; }
+        public virtual SubscriptionModel SubModel { get; set; }
         public string APIKey { get; set; }
     }
     public class Share
     {
         public int ShareID { get; set; }
-        public int ProjectToShareID { get; set; }
-        public int OwnerID { get; set; }//владелец
-        public int SharedID { get; set; }//кому дает доступ
+        public virtual Project ProjectToShare { get; set; }
+        public virtual User Owner { get; set; }//владелец
+        public virtual ICollection<User> Shared { get; set; }//кому дает доступ
         public bool isRead { get; set; }
         public bool isWrite { get; set; }
     }
     public class ProjectMaterials
     {
         public int ProjectMaterialsID { get; set; }
-        public int ProjectID { get; set; }
-        public int MaterialID { get; set; }
+        public virtual Project Project { get; set; }
+        public virtual ICollection<Material> Material { get; set; }
     }
     public class Material
     {
         public int MaterialID { get; set; }
+        public virtual User Owner { get; set; }
         public string Name { get; set; }
         public decimal Hardness { get; set; }
         public decimal Elasticity { get; set; }

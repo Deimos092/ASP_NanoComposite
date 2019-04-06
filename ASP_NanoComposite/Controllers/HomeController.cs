@@ -24,10 +24,40 @@ namespace ASP_NanoComposite.Controllers
                 {
                     item.SubModel.NumberOfProj = 5;
                 }*/
-                SubscriptionModel s = new SubscriptionModel();
-                s.NumberOfShared = 1;
-                cont.SubModel.Add(s);
+                //SubscriptionModel s = new SubscriptionModel();
+                //s.NumberOfShared = 1;
+                //cont.SubModel.Add(s);
+
+                User user = new User() { Login = "Test", SubModel = new SubscriptionModel() };
+                cont.Users.Add(user);
                 cont.SaveChanges();
+
+                Project project = new Project() { ProjectDate = DateTime.Now, ProjectDescription = "randomDesc", ProjectName = "Test" };
+                cont.Projects.Add(project);
+                cont.SaveChanges();
+
+                Material material = new Material() { Owner = user, Name = "AnyMaterial" };
+                cont.Materials.Add(material);
+                cont.SaveChanges();
+
+                Material material2 = new Material() { Owner = user, Name = "123" };
+                cont.Materials.Add(material2);
+                cont.SaveChanges();
+
+                ProjectMaterials projectMaterials = new ProjectMaterials() { Material = new List<Material>(), Project = project };
+                projectMaterials.Material.Add(material);
+                projectMaterials.Material.Add(material2);
+                cont.ProjectMaterials.Add(projectMaterials);
+                cont.SaveChanges();
+
+                Share share = new Share() { Owner = user, Shared = new List<User>(), ProjectToShare = project };
+                cont.Shares.Add(share);
+                cont.SaveChanges();
+
+
+
+
+
             }
             return View();
 		}
