@@ -176,6 +176,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ProjectsTestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -241,6 +242,14 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Project\Management.cshtml" />
+    <Content Include="Views\ProjectsTest\Create.cshtml" />
+    <Content Include="Views\ProjectsTest\Delete.cshtml" />
+    <Content Include="Views\ProjectsTest\Details.cshtml" />
+    <Content Include="Views\ProjectsTest\Edit.cshtml" />
+    <Content Include="Views\ProjectsTest\Index.cshtml" />
+    <Content Include="Views\ProjectsTest\ProjectContent.cshtml" />
+    <Content Include="Views\Shared\_ProjectLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

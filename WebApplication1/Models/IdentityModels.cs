@@ -34,7 +34,7 @@ namespace WebApplication1.Models
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
         public DateTime ProjectDate { get; set; }
-        public virtual User Owner { get; set; }//владелец
+        public User Owner { get; set; }//владелец
         public virtual ICollection<Share> SharedTo { get; set; }
         public virtual ICollection<Material> UsedMaterials { get; set; }
     }
