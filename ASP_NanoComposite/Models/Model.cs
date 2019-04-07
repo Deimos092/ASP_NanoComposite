@@ -22,7 +22,7 @@ namespace ASP_NanoComposite.Models//CodeFirst //просто для лучшег
                 .WithMany()
                 .Map(m =>
                 {
-                    m.ToTable("Material");
+                    m.ToTable("UsedMaterials");
                     m.MapLeftKey("ProjectID");
                     m.MapRightKey("MaterialID");
                 });
@@ -31,7 +31,7 @@ namespace ASP_NanoComposite.Models//CodeFirst //просто для лучшег
                 .WithMany()
                 .Map(m =>
                 {
-                    m.ToTable("Share");
+                    m.ToTable("SharedTo");
                     m.MapLeftKey("ProjectID");
                     m.MapRightKey("ShareID");
                 });
