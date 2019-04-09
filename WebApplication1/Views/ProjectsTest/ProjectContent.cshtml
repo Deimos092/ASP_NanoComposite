@@ -1,9 +1,87 @@
 ﻿@model WebApplication1.Models.Project
-
+@using WebApplication1.Models;
 @{
     ViewBag.Title = "ProjectContent";
     Layout = "~/Views/Shared/_ProjectLayout.cshtml";
 }
 
 <h2>ProjectContent</h2>
+<script data-require="jquery" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js"></script>
+<div class="col-md-12">
+    <div class="col-md-10">
+        <table id="userTable" class="table table-hover">
+            <tbody>
+                @foreach (var c in Model.UsedComposits)
+                {
+                    <tr id="@c.CompositeID"><td>@c.Name</td><td>@c.Elasticity</td><td>@c.FactorKogezia</td><td>@c.Hardness</td><td>@c.Porosity</td><td>@c.Strength</td><td>@c.ThermalConduct</td></tr>
+                }
+                @*@using (ApplicationDbContext c = new ApplicationDbContext())
+                    {
+                        //Composite composite = new Composite() { Name = "Test", Elasticity = 1, FactorKogezia = 2, Hardness = 3, Porosity = 4, Strength = 5, ThermalConduct = 6 };
+                        //c.Composits.Add(composite);
+                        Project p = c.Projects.Where(l => l.ProjectID == Model.ProjectID).First();
+                        p.UsedComposits = new List<Composite>();
+                        p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 1).First());
+                        p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 2).First());
+                        p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 3).First());
+                        c.SaveChanges();
+                    }*@
 
+                @*<tr id="1"><td>content</td><td>content</td><td>content</td></tr>
+                    <tr><td>content</td><td>content</td><td>content</td></tr>
+                    <tr><td>content</td><td>content</td><td>content</td></tr>
+                    <tr><td>content</td><td>content</td><td>content</td></tr>
+                    <tr><td>content</td><td>content</td><td>content</td></tr>*@
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-default" style="width:100%" href="#" role="button">Добавить</a>
+        <a class="btn btn-default" style="width:100%" href="#" role="button">Удалить</a>
+        <a class="btn btn-default" style="width:100%" href="#" role="button">Редактировать</a>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="col-md-9">
+        <canvas id="lineChart" width="800" height="600" class="chartjs-render-monitor"></canvas>
+    </div>
+    <div class="col-md-3">
+        <div class="range">
+            <input type="range" name="range" min="1" max="100" value="50" onmousemove="range.value=value">
+            <output id="range">50</output>
+        </div>
+        <div class="col-md-12" style="padding-left:0;padding-right:0">
+            <table id="userTable" class="table table-hover">
+                <tbody>
+                    <tr><td style="padding-left:2px">Text:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text123:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<script type="text/javascript" src="~/Scripts/Chart.js"></script>
+
+<script>
+
+    $('#userTable').on('click', 'tbody tr', function (event) {
+        $(this).addClass('selected').siblings().removeClass('selected');
+        alert(this.id);
+    });
+//    $("tr").click(function () {
+//      $(this).addClass("selected").siblings().removeClass("selected");
+//});
+</script>

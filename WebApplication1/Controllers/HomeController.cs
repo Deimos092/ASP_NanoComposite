@@ -9,18 +9,32 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebApplication1.Models;
-
+using System.Collections.Generic;
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            //using (ApplicationDbContext c = new ApplicationDbContext())
-            //{
-            //    c.Database.CommandTimeout = 600;
-            //    c.Database.CreateIfNotExists();
-            //}
+            using (ApplicationDbContext c = new ApplicationDbContext())
+            {
+                //c.Database.CommandTimeout = 600;
+                //c.Database.CreateIfNotExists();
+                //var co = new Composite();
+                //Material m = new Material() { Density = 0 };
+                //Material m2 = new Material() { Density = 12 };
+                //co.Materials = new List<Material>();
+                //co.Materials.Add(m);
+                //co.Materials.Add(m2);
+                //c.Composits.Add(co);
+                //c.Materials.Add(m);
+                //c.Materials.Add(m2);
+                Project p = new Project() { ProjectName = "123", ProjectDate = DateTime.Now };
+                c.Projects.Add(p);
+                //Material m = new Material() { Density = 1 };
+                //c.Composits.Where(k => k.CompositeID == 1).First().Materials.Add(m);
+                c.SaveChanges();
+            }
             return View();
         }
         

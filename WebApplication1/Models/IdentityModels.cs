@@ -36,7 +36,7 @@ namespace WebApplication1.Models
         public DateTime ProjectDate { get; set; }
         public User Owner { get; set; }//владелец
         public virtual ICollection<Share> SharedTo { get; set; }
-        public virtual ICollection<Material> UsedMaterials { get; set; }
+        public virtual ICollection<Composite> UsedComposits { get; set; }
     }
     public class Share
     {
@@ -61,6 +61,18 @@ namespace WebApplication1.Models
         public decimal Percent { get; set; }
         public bool isMatrix { get; set; }
     }
+    public class Composite
+    {
+        public int CompositeID { get; set; }
+        public string Name { get; set; }
+        public decimal Porosity { get; set; }
+        public decimal Elasticity { get; set; }
+        public decimal Hardness { get; set; }
+        public decimal FactorKogezia { get; set; }
+        public decimal Strength { get; set; }
+        public decimal ThermalConduct { get; set; } 
+        public virtual ICollection<Material> Materials { get; set; }
+    }
     public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext()
@@ -72,10 +84,20 @@ namespace WebApplication1.Models
         public DbSet<Project> Projects { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Share> Shares { get; set; }
+        public DbSet<Composite> Composits { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Project>()
-                .HasMany(u => u.UsedMaterials)
+                .HasMany(u => u.UsedComposits)
+                .WithMany()
+                .Map(m =>
+                {
+                    m.ToTable("UsedComposits"); //материалы в проекте
+                    m.MapLeftKey("ProjectID");
+                    m.MapRightKey("CompositeID");
+                });
+                modelBuilder.Entity<Composite>()
+                .HasMany(u => u.Materials)
                 .WithMany()
                 .Map(m =>
                 {
