@@ -20,15 +20,15 @@ namespace WebApplication1.Controllers
             {
                 //c.Database.CommandTimeout = 600;
                 //c.Database.CreateIfNotExists();
-                //var co = new Composite();
-                //Material m = new Material() { Density = 0 };
-                //Material m2 = new Material() { Density = 12 };
-                //co.Materials = new List<Material>();
-                //co.Materials.Add(m);
-                //co.Materials.Add(m2);
-                //c.Composits.Add(co);
-                //c.Materials.Add(m);
-                //c.Materials.Add(m2);
+                var co = new Composite();
+                Material m = new Material() { Density = 0 };
+                Material m2 = new Material() { Density = 12 };
+                co.Materials = new List<Material>();
+                co.Materials.Add(m);
+                co.Materials.Add(m2);
+                c.Composits.Add(co);
+                c.Materials.Add(m);
+                c.Materials.Add(m2);
                 Project p = new Project() { ProjectName = "123", ProjectDate = DateTime.Now };
                 c.Projects.Add(p);
                 //Material m = new Material() { Density = 1 };

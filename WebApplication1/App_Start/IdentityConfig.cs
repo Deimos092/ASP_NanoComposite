@@ -24,13 +24,17 @@ namespace WebApplication1
             //return Task.FromResult(0);
             return Task.Factory.StartNew(() => { sendMail(message); });
         }
+        /// <summary>
+        /// Отправка письма с подтверждением
+        /// </summary>
+        /// <param name="message"></param>
         void sendMail(IdentityMessage message)
         {
             #region formatter
-            string text = string.Format("Please click on this link to {0}: {1}", message.Subject, message.Body);
-            string html = "Please confirm your account by clicking this link: <a href=\"" + message.Body + "\">link</a><br/>";
+            string text = string.Format("Нажмите на эту ссылку {0}: {1}", message.Subject, message.Body);
+            string html = "Чтобы подтвердить аккаунт пожалуйста перейдите по <a href=\"" + message.Body + "\">ссылке</a><br/>";
 
-            html += HttpUtility.HtmlEncode(@"Or click on the copy the following link on the browser:" + message.Body);
+            //html += HttpUtility.HtmlEncode(@"Or click on the copy the following link on the browser:" + message.Body);
             #endregion
 
             MailMessage msg = new MailMessage();
