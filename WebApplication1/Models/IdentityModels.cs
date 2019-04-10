@@ -56,8 +56,7 @@ namespace WebApplication1.Models
         public decimal HeatCapacity { get; set; }
         public decimal ThermalConduct { get; set; }
         public decimal ThermalExpansion { get; set; }
-        public decimal Percent { get; set; }
-        public bool isMatrix { get; set; }
+        //public decimal Percent { get; set; }
     }
     public class Composite
     {
@@ -69,7 +68,15 @@ namespace WebApplication1.Models
         public decimal FactorKogezia { get; set; }
         public decimal Strength { get; set; }
         public decimal ThermalConduct { get; set; } 
-        public virtual ICollection<Material> Materials { get; set; }
+        public virtual ICollection<UsedMaterial> UsedMaterials { get; set; }
+    }
+    public class UsedMaterial
+    {
+        public int UsedMaterialID { get; set; }
+        public Material Material { get; set; }
+        public bool isMatrix { get; set; }
+        public bool isMassPercent { get; set; }
+        public decimal Percent { get; set; }
     }
     public class ApplicationDbContext : IdentityDbContext<User> 
     {
@@ -94,13 +101,13 @@ namespace WebApplication1.Models
                     m.MapRightKey("CompositeID");
                 });
             modelBuilder.Entity<Composite>()
-                .HasMany(u => u.Materials)
+                .HasMany(u => u.UsedMaterials)
                 .WithMany()
                 .Map(m =>
                 {
                     m.ToTable("UsedMaterials"); //материалы в композите
                     m.MapLeftKey("CompositeID");
-                    m.MapRightKey("MaterialID");
+                    m.MapRightKey("UsedMaterialID");
                 });
             modelBuilder.Entity<Project>()
                 .HasMany(u => u.SharedTo)

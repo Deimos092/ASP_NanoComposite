@@ -23,9 +23,9 @@ namespace WebApplication1.Controllers
                 var co = new Composite();
                 Material m = new Material() { Density = 0 };
                 Material m2 = new Material() { Density = 12 };
-                co.Materials = new List<Material>();
-                co.Materials.Add(m);
-                co.Materials.Add(m2);
+                co.UsedMaterials = new List<UsedMaterial>();
+                co.UsedMaterials.Add(new UsedMaterial() { Material = m, Percent = 90, isMatrix=true });
+                co.UsedMaterials.Add(new UsedMaterial() { Material = m2, Percent = 10, isMatrix=false, isMassPercent=true });
                 c.Composits.Add(co);
                 c.Materials.Add(m);
                 c.Materials.Add(m2);

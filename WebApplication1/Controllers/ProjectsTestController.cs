@@ -135,5 +135,17 @@ namespace WebApplication1.Controllers
             Project project = db.Projects.Find(id);
             return View(project);
         }
+
+        public ActionResult AddComposite(Composite composite)
+        {
+            composite = new Composite();
+            return View(composite);
+        }
+        [HttpPost]
+        public ActionResult AddComposite(Composite composite, string json)
+        {
+            composite = new Composite();
+            return View(composite);
+        }
     }
 }
