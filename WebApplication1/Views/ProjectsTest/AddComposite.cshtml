@@ -22,153 +22,60 @@
             <div class="col-sm-6">
                 <table id="userTable" class="table table-hover">
                     <tbody>
+                        @foreach (var c in Model.UsedMaterials)
+                        {
                         <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
+
+                            <th scope="row">@c.Material.Name</th>
+                            <td class="idCol" hidden="hidden">@c.Material.MaterialID</td>
+                            <td>@c.Material.Density</td>
+                            <td>@c.Material.Elasticity</td>
+                            <td>@c.Material.Hardness</td>
+                            <td>@c.Material.HeatCapacity</td>
+                            <td>@c.Material.StrengthBeyond</td>
+                            <td>@c.Material.ThermalConduct</td>
+                            <td>@c.Material.ThermalExpansion</td>
+                            <td class="isMassPercentCol"><input type="checkbox" class="checkbox" @(c.isMassPercent ? "checked=checked" : "")></td>
+                            <td class="isMatrixCol"><input type="checkbox" class="checkbox" @(c.isMatrix ? "checked=checked" : "")></td>
+                            <td class="PercentCol">@c.Percent</td>
                         </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>witter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>witter</td>
-                        </tr>
+                        }
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-1">
+            <div class="col-sm-1 sampleOne">
                 <a class="btn btn-default" style="width:100%" href="#" role="button" id="Add"><</a>
                 <a class="btn btn-default" style="width:100%" href="#" role="button" id="Remove">></a>
+                <input type="text" style="width:100%" class="focusify-enable form-control" id="percent" placeholder="100%">
             </div>
             <div class="col-sm-5" style="overflow: auto; height:500px; max-height:fit-content">
                 <table id="userTable1" class="table table-hover">
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>twitter</td>
-                        </tr>
+                        @using (WebApplication1.Models.ApplicationDbContext c = new WebApplication1.Models.ApplicationDbContext())
+                        {
+
+                            foreach (var m in c.Materials.Where(m => m.Owner.UserName == User.Identity.Name))
+                            {
+                                <tr>
+                                    <th scope="row">@m.Name</th>
+                                    <td hidden="hidden">@m.MaterialID</td>
+                                    <td>@m.Density</td>
+                                    <td>@m.Elasticity</td>
+                                    <td>@m.Hardness</td>
+                                    <td>@m.HeatCapacity</td>
+                                    <td>@m.StrengthBeyond</td>
+                                    <td>@m.ThermalConduct</td>
+                                    <td>@m.ThermalExpansion</td>
+                                    <td hidden="hidden" class="isMassPercentCol"></td>
+                                    <td hidden="hidden" class="isMatrixCol"></td>
+                                    <td hidden="hidden" class="PercentCol"></td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
+                <script src="~/Scripts/focusify.js"></script>
+                
                 <script>
                     var obj = new Object();
                     obj.ids = [];
@@ -182,12 +89,32 @@
                         $(this).addClass('selected').siblings().removeClass('selected');
                         $('#userTable .selected').removeClass('selected');
                     });
+                    var current = $(".sampleOne").find('.focusify-enable').css('border');
                     $('#Add').on('click', '', function (event) {
-                        var tr = $('#userTable1 .selected').closest("tr").remove().clone();
-                        $('#userTable').append(tr);
+                        if (isNaN(parseFloat($("#percent").val()))) {
+                            $(".sampleOne").find('.focusify-disable').fadeTo("fast", 0.3).addClass('focusedDisable');
+                            
+                            $(".sampleOne").find('.focusify-enable').css('border', '2px solid ' + "#ff0000").addClass('focusedEnable');
+                            setTimeout(function () {
+                                $('.focusedDisable').fadeTo("fast", 1);
+                                $('.focusedEnable').css('border', current);
+                                $(".sampleOne").find('.focusify-disable').removeClass('focusedDisable');
+                                $(".sampleOne").find('.focusify-enable').removeClass('focusedEnable');
+                            }, 100);
+                        } else {
+                            var tr = $('#userTable1 .selected').closest("tr").remove().clone();
+                            tr.find(".isMassPercentCol").removeAttr("hidden");
+                            tr.find(".isMatrixCol").removeAttr("hidden");
+                            tr.find(".PercentCol").removeAttr("hidden");
+                            tr.find(".PercentCol").html(parseFloat($("#percent").val()).toFixed(2));
+                            $('#userTable').append(tr);
+                        }
                     });
                     $('#Remove').on('click', '', function (event) {
                         var tr = $('#userTable .selected').closest("tr").remove().clone();
+                        tr.find(".isMassPercentCol").attr("hidden", "hidden");
+                        tr.find(".isMatrixCol").attr("hidden", "hidden");
+                        tr.find(".PercentCol").attr("hidden", "hidden");
                         $('#userTable1').append(tr);
                     });
                 </script>
@@ -255,10 +182,36 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="hidden" name="json" value="test123" /> 
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <input type="hidden" id="json" name="json" value="test123" /> 
+                    <input type="submit" id="submit" value="Create" class="btn btn-default" />
                 </div>
             </div>
+            <script>
+                $(function () {
+                    $("#submit").click(function (e) {
+                        var sum = 0;
+                        $('#userTable > tbody > tr').find(".PercentCol").each(function () {
+                            sum += parseFloat($(this).html());
+                        });
+                        if (sum != 100) {
+                            alert("Неверные проценты");
+                            e.preventDefault();
+                        }
+                        var array = [];
+                        $('#userTable > tbody').find("tr").each(function () {
+                            var material = {
+                                id: $(this).find(".idCol").html(),
+                                percent: $(this).find(".PercentCol").html(),
+                                isMassPercent: $(this).find(".isMassPercentCol > .checkbox").attr("checked") == 'checked',
+                                isMatrix: $(this).find(".isMatrixCol > .checkbox").attr("checked") == 'checked'
+                            };
+                            array.push(material);
+                        });
+                        $("#json").val(JSON.stringify(array));
+                    }
+                    );
+                });
+            </script>
         </div>
     }
 

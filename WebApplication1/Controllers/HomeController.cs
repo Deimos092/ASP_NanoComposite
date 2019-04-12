@@ -24,13 +24,21 @@ namespace WebApplication1.Controllers
                 Material m = new Material() { Density = 0 };
                 Material m2 = new Material() { Density = 12 };
                 co.UsedMaterials = new List<UsedMaterial>();
-                co.UsedMaterials.Add(new UsedMaterial() { Material = m, Percent = 90, isMatrix=true });
-                co.UsedMaterials.Add(new UsedMaterial() { Material = m2, Percent = 10, isMatrix=false, isMassPercent=true });
+                UsedMaterial usedMaterial1 = new UsedMaterial() { Material = m, Percent = 90, isMatrix = true };
+                UsedMaterial usedMaterial2 = new UsedMaterial() { Material = m2, Percent = 10, isMatrix = false, isMassPercent = true };
+
+                c.UsedMaterial.Add(usedMaterial1);
+                c.UsedMaterial.Add(usedMaterial2);
+
+                co.UsedMaterials.Add(usedMaterial1);
+                co.UsedMaterials.Add(usedMaterial2);
+
                 c.Composits.Add(co);
                 c.Materials.Add(m);
                 c.Materials.Add(m2);
                 Project p = new Project() { ProjectName = "123", ProjectDate = DateTime.Now };
                 c.Projects.Add(p);
+
                 //Material m = new Material() { Density = 1 };
                 //c.Composits.Where(k => k.CompositeID == 1).First().Materials.Add(m);
                 c.SaveChanges();

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Models;
+using Newtonsoft.Json;
 
 namespace WebApplication1.Controllers
 {
@@ -136,16 +137,63 @@ namespace WebApplication1.Controllers
             return View(project);
         }
 
-        public ActionResult AddComposite(Composite composite)
+        public ActionResult AddComposite(int projectId, int? compositeId)
         {
-            composite = new Composite();
+            Composite composite;
+            ViewBag.ProjectId = projectId;
+            if (compositeId.HasValue)
+            {
+                
+                composite = db.Composits.Where(c => c.CompositeID == compositeId.Value).First();
+                composite.UsedMaterials = db.UsedMaterial.Where(c => c.Composite_.CompositeID == compositeId.Value).ToList();
+            }
+            else
+            {
+                composite = new Composite();
+                composite.UsedMaterials = new List<UsedMaterial>();
+            }
+            
             return View(composite);
         }
-        [HttpPost]
-        public ActionResult AddComposite(Composite composite, string json)
+        public class temp
         {
-            composite = new Composite();
-            return View(composite);
+            public int id;
+            public decimal percent;
+            public bool isMassPercent;
+            public bool isMatrix;
+        }
+        [HttpPost]
+        public ActionResult AddComposite(Composite composite, string json, int projectId)
+        {
+            List<temp> list = JsonConvert.DeserializeObject<List<temp>>(json);
+            foreach (var item in db.UsedMaterial.Where(m => m.Composite_.CompositeID == composite.CompositeID))
+            {
+                db.UsedMaterial.Remove(item);
+            }
+            composite.UsedMaterials = new List<UsedMaterial>();
+            foreach (var item in list)
+            {
+                UsedMaterial m = new UsedMaterial();
+                m.isMassPercent = item.isMassPercent;
+                m.isMatrix = item.isMatrix;
+                m.Percent = item.percent / 100;
+                m.Material = db.Materials.Where(a => a.MaterialID == item.id).First();
+                m.Composite_ = composite;
+                db.UsedMaterial.Add(m);
+                composite.UsedMaterials.Add(m);
+            }
+            db.Entry(composite).State = EntityState.Modified;
+            Project p = db.Projects.Where(m => m.ProjectID == projectId).First();
+            if (p.UsedComposits.Where(m=>m.CompositeID==composite.CompositeID).Count()==0)
+            {
+                p.UsedComposits.Add(composite);
+            }
+            if (composite.CompositeID==0)
+            {
+                db.Composits.Add(composite);
+            }
+            db.SaveChanges();          
+            return RedirectToAction("ProjectContent", new { id = projectId });
         }
     }
 }

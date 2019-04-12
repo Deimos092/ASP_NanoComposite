@@ -32,7 +32,7 @@ namespace WebApplication1.Models
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
         public DateTime ProjectDate { get; set; }
-        public User Owner { get; set; }//владелец
+        public virtual User Owner { get; set; }//владелец
         public virtual ICollection<Share> SharedTo { get; set; }
         public virtual ICollection<Composite> UsedComposits { get; set; }
     }
@@ -73,10 +73,11 @@ namespace WebApplication1.Models
     public class UsedMaterial
     {
         public int UsedMaterialID { get; set; }
-        public Material Material { get; set; }
+        public virtual Material Material { get; set; }
         public bool isMatrix { get; set; }
         public bool isMassPercent { get; set; }
         public decimal Percent { get; set; }
+        public virtual Composite Composite_ { get; set; }
     }
     public class ApplicationDbContext : IdentityDbContext<User> 
     {
@@ -89,6 +90,7 @@ namespace WebApplication1.Models
         public DbSet<Material> Materials { get; set; }
         public DbSet<Share> Shares { get; set; }
         public DbSet<Composite> Composits { get; set; }
+        public DbSet<UsedMaterial> UsedMaterial { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Project>()
@@ -100,15 +102,15 @@ namespace WebApplication1.Models
                     m.MapLeftKey("ProjectID");
                     m.MapRightKey("CompositeID");
                 });
-            modelBuilder.Entity<Composite>()
-                .HasMany(u => u.UsedMaterials)
-                .WithMany()
-                .Map(m =>
-                {
-                    m.ToTable("UsedMaterials"); //материалы в композите
-                    m.MapLeftKey("CompositeID");
-                    m.MapRightKey("UsedMaterialID");
-                });
+            //modelBuilder.Entity<Composite>()
+            //    .HasMany(u => u.UsedMaterials)
+            //    .WithMany()
+            //    .Map(m =>
+            //    {
+            //        m.ToTable("UsedMaterialsProject"); //материалы в композите
+            //        m.MapLeftKey("CompositeID");
+            //        m.MapRightKey("UsedMaterialID");
+            //    });
             modelBuilder.Entity<Project>()
                 .HasMany(u => u.SharedTo)
                 .WithMany()
