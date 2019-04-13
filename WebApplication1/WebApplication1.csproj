@@ -253,6 +253,7 @@
     <Content Include="Views\ProjectsTest\ProjectContent.cshtml" />
     <Content Include="Views\Shared\_ProjectLayout.cshtml" />
     <Content Include="Views\ProjectsTest\AddComposite.cshtml" />
+    <Content Include="Views\ProjectsTest\ManageMaterials.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

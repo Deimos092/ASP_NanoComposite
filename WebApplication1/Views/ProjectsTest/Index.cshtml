@@ -1,15 +1,16 @@
 ﻿@model IEnumerable<WebApplication1.Models.Project>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Проекты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Проекты</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
+<table class="table col-md-5">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.ProjectName)
@@ -42,5 +43,4 @@
         </td>
     </tr>
 }
-
 </table>

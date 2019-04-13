@@ -1,0 +1,77 @@
+﻿@model dynamic
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Управление материалами</title>
+    <script data-require="jquery" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js"></script>
+</head>
+<body>
+    <div>
+        <h3>Управлениие материалами</h3>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-10">
+            <table id="userTable" class="table table-hover">
+                <tr><th>Название материала</th><th>Твердость</th><th>Эластичность</th><th>Пред. силы</th><th>Плотность</th><th>Теплоемкость</th><th>Теплопроводность</th><th>Тепл. расшир</th></tr>
+                <tbody>
+                    @foreach (var c in Model.Materials)
+                    {
+                        <tr id="@c.MaterialID"><td>@c.Name</td><td>@c.Hardness</td><td>@c.Elasticity</td><td>@c.StrengthBeyond</td><td>@c.Density</td><td>@c.HeatCapacity</td><td>@c.ThermalConduct</td><td>@c.ThermalExpansion</td></tr>
+                    }
+                </tbody>
+            </table>
+            <script>
+                $('#userTable').on('click', 'tbody tr', function (event) {
+                    $(this).addClass('selected').siblings().removeClass('selected');
+                });
+            </script>
+        </div>
+        <div class="col-md-2">
+            <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить</a>
+            <a class="btn btn-default" id="buttonEdit" style="width:100%" href="#" role="button">Редактировать</a>
+        </div>
+        <script>
+            //отсылка инфы на сервак
+            $('#buttonDel').on('click', '', function (event) {
+                var tr = $('#userTable .selected').closest("tr");
+                var matId = tr.attr('id');
+                tr.remove();
+                //var toRemove = { MaterialID: 1 };
+                $.ajax({
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: "{ MaterialID:" + matId + "}",
+                    url: "/ProjectsTest/DeleteMaterial",
+                    success: function () {
+                        console.log("material with Id:" + matId + " deleted from db");
+                    }
+                });
+            });
+        </script>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <table id="dataTable" class="table table-hover">
+                <tbody>
+                    <tr><td>Название:</td><td><input type="text" style="width:100%"></td></tr>
+                    <tr><td>Твердость:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Эластичность:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Пред. силы:</td><td ><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Плотность:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Теплоемкость:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Теплопроводность:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Тепл. расшир:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

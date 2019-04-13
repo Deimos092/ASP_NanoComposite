@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Models;
 using Newtonsoft.Json;
+using System.Dynamic;
 
 namespace WebApplication1.Controllers
 {
@@ -136,7 +137,12 @@ namespace WebApplication1.Controllers
             Project project = db.Projects.Find(id);
             return View(project);
         }
-
+        /// <summary>
+        /// для перехода на страницу создания композита
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="compositeId"></param>
+        /// <returns></returns>
         public ActionResult AddComposite(int projectId, int? compositeId)
         {
             Composite composite;
@@ -155,6 +161,10 @@ namespace WebApplication1.Controllers
             
             return View(composite);
         }
+
+        /// <summary>
+        /// Класс для временного размещения данных с json
+        /// </summary>
         public class temp
         {
             public int id;
@@ -162,6 +172,13 @@ namespace WebApplication1.Controllers
             public bool isMassPercent;
             public bool isMatrix;
         }
+        /// <summary>
+        /// Добавление композита
+        /// </summary>
+        /// <param name="composite"></param>
+        /// <param name="json"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult AddComposite(Composite composite, string json, int projectId)
         {
@@ -194,6 +211,36 @@ namespace WebApplication1.Controllers
             }
             db.SaveChanges();          
             return RedirectToAction("ProjectContent", new { id = projectId });
+        }
+        /// <summary>
+        /// Переход на страницу управления материалами
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManageMaterials(string ownerID)
+        {
+            dynamic mymodel = new ExpandoObject();
+            User usr = db.Users.Where(u => u.Id == ownerID).First();
+            var mats = db.Materials.Where(m => m.Owner.Id == ownerID);
+            mymodel.User = usr;
+            mymodel.Materials = mats;
+            return View(mymodel);
+        }
+        /// <summary>
+        /// Сюда стучится ajax для того чтобы удалить материал
+        /// </summary>
+        /// <param name="MaterialID"></param>
+        /// <returns></returns>
+        public JsonResult DeleteMaterial(int MaterialID)
+        {
+            Material mt = db.Materials.Where(m => m.MaterialID == MaterialID).First();
+            var usedMts = db.UsedMaterial.Where(um => um.Material.MaterialID == mt.MaterialID);
+            //удаление из UsedMaterials чтобы не было ошибки
+            if(usedMts.Count() != 0)
+                foreach (var uMt in usedMts)
+                    db.UsedMaterial.Remove(uMt);
+            db.Materials.Remove(mt);
+            db.SaveChanges();
+            return Json(mt.Name, JsonRequestBehavior.AllowGet);
         }
     }
 }

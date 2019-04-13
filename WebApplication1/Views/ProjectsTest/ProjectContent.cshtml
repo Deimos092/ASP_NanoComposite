@@ -40,6 +40,7 @@
         @Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })
         <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить (Нет)</a>
         <a class="btn btn-default" id="buttonEdit" style="width:100%" href="#" role="button">Редактировать</a>
+        @Html.ActionLink("Создать материал", "ManageMaterials", "ProjectsTest", new { ownerID = Model.Owner.Id}, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })
     </div>
     <script>
         $('#userTable').on('click', 'tbody tr', function (event) {
