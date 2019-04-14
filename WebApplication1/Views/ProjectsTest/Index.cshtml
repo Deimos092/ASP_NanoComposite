@@ -13,13 +13,16 @@
 <table class="table col-md-5">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ProjectName)
+            Название
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProjectDescription)
+            Описание
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProjectDate)
+            Дата создания
+        </th>
+        <th>
+            Владелец
         </th>
         <th></th>
     </tr>
@@ -27,7 +30,6 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @*@Html.DisplayFor(modelItem => item.ProjectName)*@
             @Html.ActionLink(item.ProjectName, "ProjectContent", new { id = item.ProjectID })
         </td>
         <td>
@@ -37,9 +39,12 @@
             @Html.DisplayFor(modelItem => item.ProjectDate)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProjectID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ProjectID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProjectID })
+            @Html.DisplayFor(modelItem => item.Owner.Email)
+        </td>
+        <td>
+            @Html.ActionLink("Редактировать", "Edit", new { id=item.ProjectID }) |
+            @Html.ActionLink("Подробнее", "Details", new { id=item.ProjectID }) |
+            @Html.ActionLink("Удалить", "Delete", new { id=item.ProjectID })
         </td>
     </tr>
 }

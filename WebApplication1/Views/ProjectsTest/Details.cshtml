@@ -4,22 +4,14 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Подробнее о проекте @Model.ProjectName</h2>
 
 <div>
-    <h4>Project</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ProjectName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ProjectName)
-        </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ProjectDescription)
+            Описание:
         </dt>
 
         <dd>
@@ -27,16 +19,27 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ProjectDate)
+            Дата создания:
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.ProjectDate)
         </dd>
 
+        <dt>
+            Кол-во композитов:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UsedComposits.Count)
+        </dd>
+        <dt>
+            Кол-во участников в проекте:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SharedTo.Count)
+        </dd>
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Вернуться", "Index")
 </p>
