@@ -193,7 +193,7 @@ namespace WebApplication1.Controllers
                 UsedMaterial m = new UsedMaterial();
                 m.isMassPercent = item.isMassPercent;
                 m.isMatrix = item.isMatrix;
-                m.Percent = item.percent / 100;
+                m.Percent = item.percent;
                 m.Material = db.Materials.Where(a => a.MaterialID == item.id).First();
                 m.Composite_ = composite;
                 db.UsedMaterial.Add(m);
