@@ -38,14 +38,36 @@
     </div>
     <div class="col-md-2">
         @Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })
-        <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить (Нет)</a>
+        <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить</a>
         <a class="btn btn-default" id="buttonEdit" style="width:100%" href="#" role="button">Редактировать</a>
         @Html.ActionLink("Создать материал", "ManageMaterials", "ProjectsTest", new { ownerID = Model.Owner.Id}, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })
     </div>
     <script>
         $('#userTable').on('click', 'tbody tr', function (event) {
             $(this).addClass('selected').siblings().removeClass('selected');
-            $("#buttonEdit").attr("href", "/ProjectsTest/AddComposite?projectId=" +@Model.ProjectID+"&compositeId=" + this.id);
+        });
+        $('#buttonEdit').on('click', '', function (event) {
+            var tr = $('#userTable .selected').closest("tr");
+            if (tr.length==1) {
+                var compId = tr.attr('id');
+                location.href = "/ProjectsTest/AddComposite?projectId=" +@Model.ProjectID+"&compositeId=" + compId;
+            }
+        });
+        $('#buttonDel').on('click', '', function (event) {
+            
+            var tr = $('#userTable .selected').closest("tr");
+            if (tr.length == 1) {
+                var compId = tr.attr('id');
+                $.ajax({
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: "{ CompositeID:" + compId + "}",
+                    url: "/ProjectsTest/DeleteComposite",
+                    success: function () {
+                        tr.remove();
+                    }
+                });
+            }
         });
     </script>
 </div>

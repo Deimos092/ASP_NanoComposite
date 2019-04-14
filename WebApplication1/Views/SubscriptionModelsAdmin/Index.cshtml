@@ -1,0 +1,46 @@
+﻿@model IEnumerable<WebApplication1.Models.SubscriptionModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberOfProj)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberOfShared)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubCost)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfProj)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfShared)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SubCost)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.SubscriptionModelID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.SubscriptionModelID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.SubscriptionModelID })
+        </td>
+    </tr>
+}
+
+</table>
