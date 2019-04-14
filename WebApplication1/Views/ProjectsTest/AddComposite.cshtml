@@ -56,20 +56,23 @@
 
                             foreach (var m in c.Materials.Where(m => m.Owner.UserName == User.Identity.Name))
                             {
-                                <tr>
-                                    <th scope="row">@m.Name</th>
-                                    <td hidden="hidden">@m.MaterialID</td>
-                                    <td>@m.Density</td>
-                                    <td>@m.Elasticity</td>
-                                    <td>@m.Hardness</td>
-                                    <td>@m.HeatCapacity</td>
-                                    <td>@m.StrengthBeyond</td>
-                                    <td>@m.ThermalConduct</td>
-                                    <td>@m.ThermalExpansion</td>
-                                    <td hidden="hidden" class="isMassPercentCol"></td>
-                                    <td hidden="hidden" class="isMatrixCol"></td>
-                                    <td hidden="hidden" class="PercentCol"></td>
-                                </tr>
+                                if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
+                                {
+                                    <tr>
+                                        <th scope="row">@m.Name</th>
+                                        <td class="idCol" hidden="hidden">@m.MaterialID</td>
+                                        <td>@m.Density</td>
+                                        <td>@m.Elasticity</td>
+                                        <td>@m.Hardness</td>
+                                        <td>@m.HeatCapacity</td>
+                                        <td>@m.StrengthBeyond</td>
+                                        <td>@m.ThermalConduct</td>
+                                        <td>@m.ThermalExpansion</td>
+                                        <td hidden="hidden" class="isMassPercentCol"></td>
+                                        <td hidden="hidden" class="isMatrixCol"></td>
+                                        <td hidden="hidden" class="PercentCol"></td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>

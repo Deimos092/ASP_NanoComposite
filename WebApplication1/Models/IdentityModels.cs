@@ -20,6 +20,7 @@ namespace WebApplication1.Models
             return userIdentity;
         }
     }
+    //woqpieoqwpieqwopieqpoiepe
     public class SubscriptionModel //модель подписки
     {
         public int SubscriptionModelID { get; set; }
