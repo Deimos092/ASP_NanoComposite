@@ -1,6 +1,7 @@
 ﻿@model dynamic
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Управление материалами";
 }
 
 <!DOCTYPE html>
@@ -43,7 +44,6 @@
                 var tr = $('#userTable .selected').closest("tr");
                 var matId = tr.attr('id');
                 tr.remove();
-                //var toRemove = { MaterialID: 1 };
                 $.ajax({
                     type: 'POST',
                     contentType: "application/json; charset=utf-8",
@@ -54,23 +54,77 @@
                     }
                 });
             });
+            $('#buttonEdit').on('click', '', function (event) {
+                //$('#userTable .selected').each(function () {
+                //    console.log($(this).html());
+                //});
+                var currentRow = $('#userTable .selected');
+                $('#tb1').val(currentRow.find('td:eq(0)').text());
+                $('#tb2').val(currentRow.find('td:eq(1)').text().replace(',','.'));
+                $('#tb3').val(currentRow.find('td:eq(2)').text().replace(',', '.'));
+                $('#tb4').val(currentRow.find('td:eq(3)').text().replace(',', '.'));
+                $('#tb5').val(currentRow.find('td:eq(4)').text().replace(',', '.'));
+                $('#tb6').val(currentRow.find('td:eq(5)').text().replace(',', '.'));
+                $('#tb7').val(currentRow.find('td:eq(6)').text().replace(',', '.'));
+                $('#tb8').val(currentRow.find('td:eq(7)').text().replace(',', '.'));
+            });
         </script>
     </div>
+
+    <input type="hidden" id="owner" name="ownerID" value=@Model.User.Id />
     <div class="col-md-12">
         <div class="col-md-4">
             <table id="dataTable" class="table table-hover">
                 <tbody>
-                    <tr><td>Название:</td><td><input type="text" style="width:100%"></td></tr>
-                    <tr><td>Твердость:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td>Эластичность:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td>Пред. силы:</td><td ><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td>Плотность:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td>Теплоемкость:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td>Теплопроводность:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td>Тепл. расшир:</td><td><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Название:</td><td><input class="cmln" id="tb1" type="text" style="width:100%"></td></tr>
+                    <tr><td>Твердость:</td><td><input class="cmln" id="tb2" type="number" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Эластичность:</td><td><input class="cmln" id="tb3" type="number" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Пред. силы:</td><td><input class="cmln" id="tb4" type="number" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Плотность:</td><td><input class="cmln" id="tb5" type="number" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Теплоемкость:</td><td><input class="cmln" id="tb6" type="number" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Теплопроводность:</td><td><input class="cmln" id="tb7" type="number" style="width:100%; padding:1px"></td></tr>
+                    <tr><td>Тепл. расшир:</td><td><input class="cmln" id="tb8" type="number" style="width:100%; padding:1px"></td></tr>
                 </tbody>
             </table>
+            <button class="btn btn-default" id="buttonAdd" style="width:25%; overflow-x:hidden; white-space:normal" href="#" role="button">Сохранить</button>
         </div>
+        <script>
+            function highlight(obj) {
+                obj.css('outline', '1px solid red');
+                function reset() {
+                    obj.css('outline', 'none');
+                }
+                setTimeout(reset, 1000);
+            }
+            var items = []
+            $('#buttonAdd').on('click', '', function (event) {
+                var flag = true;
+                $('#dataTable tbody tr td:nth-child(2)').each(function () {
+                    var ch = $(this).children();
+                    if (!ch.val() || Number(ch.val()) <= 0) {
+                        highlight(ch);
+                        flag = false;
+                    }
+                    items.push(ch);
+                })
+                //var u =  Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(Model.User));
+                var mat = {
+                    Owner: null, Name: items[0].val(), Hardness: items[1].val(), Elasticity: items[2].val(), StrengthBeyond: items[3].val(), Density: items[4].val(),
+                    HeatCapacity: items[5].val(), ThermalConduct: items[6].val(), ThermalExpansion: items[7].val()}
+                if (flag) {
+                    $.ajax({
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ material: mat, uId: '@Model.User.Id' }),
+                        url: "/ProjectsTest/AddMaterial",
+                        success: function () {
+                            console.log("success");
+                        }
+                    });
+                }
+
+            });
+        </script>
     </div>
 </body>
 </html>

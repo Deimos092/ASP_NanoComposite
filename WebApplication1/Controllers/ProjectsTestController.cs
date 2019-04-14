@@ -242,5 +242,19 @@ namespace WebApplication1.Controllers
             db.SaveChanges();
             return Json(mt.Name, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Добавление материала через ajax
+        /// </summary>
+        /// <param name="material"></param>
+        /// <returns></returns>
+        public JsonResult AddMaterial(Material material, string uId)
+        {
+            Material tmp = material;
+            User tmp_u = db.Users.Where(u => u.Id == uId).First();
+            tmp.Owner = tmp_u;
+            db.Materials.Add(tmp);
+            db.SaveChanges();
+            return Json(material, JsonRequestBehavior.AllowGet);
+        }
     }
 }
