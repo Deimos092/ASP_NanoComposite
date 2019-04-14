@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace WebApplication1.Models
 {
+    //test
     public class User : IdentityUser
     {
         public virtual SubscriptionModel SubModel { get; set; }
