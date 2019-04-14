@@ -254,7 +254,8 @@ namespace WebApplication1.Controllers
             tmp.Owner = tmp_u;
             db.Materials.Add(tmp);
             db.SaveChanges();
-            return Json(material, JsonRequestBehavior.AllowGet);
+            int newId = db.Materials.Max(m => m.MaterialID);
+            return Json(newId, JsonRequestBehavior.AllowGet);
         }
     }
 }

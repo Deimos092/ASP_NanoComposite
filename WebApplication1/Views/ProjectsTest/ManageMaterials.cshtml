@@ -43,14 +43,13 @@
             $('#buttonDel').on('click', '', function (event) {
                 var tr = $('#userTable .selected').closest("tr");
                 var matId = tr.attr('id');
-                tr.remove();
                 $.ajax({
                     type: 'POST',
                     contentType: "application/json; charset=utf-8",
                     data: "{ MaterialID:" + matId + "}",
                     url: "/ProjectsTest/DeleteMaterial",
                     success: function () {
-                        console.log("material with Id:" + matId + " deleted from db");
+                        tr.remove();
                     }
                 });
             });
@@ -117,8 +116,9 @@
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify({ material: mat, uId: '@Model.User.Id' }),
                         url: "/ProjectsTest/AddMaterial",
-                        success: function () {
-                            console.log("success");
+                        success: function (newId) {
+                            console.log("success" + newId);
+                            $('#userTable tr:last').after('<tr id="'+ newId +'"><td>' + items[0].val() + '</td><td>' + items[1].val() + '</td><td>' + items[2].val()+'</td><td>'+items[3].val()+'</td><td>'+items[4].val()+'</td><td>'+items[5].val()+'</td><td>'+items[6].val()+'</td><td>'+items[7].val()+'</td></tr>')
                         }
                     });
                 }
