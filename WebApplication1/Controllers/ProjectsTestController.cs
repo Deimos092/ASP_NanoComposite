@@ -247,15 +247,32 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="material"></param>
         /// <returns></returns>
-        public JsonResult AddMaterial(Material material, string uId)
+        public JsonResult AddMaterial(Material material, string uId, int idToEdit)
         {
-            Material tmp = material;
-            User tmp_u = db.Users.Where(u => u.Id == uId).First();
-            tmp.Owner = tmp_u;
-            db.Materials.Add(tmp);
-            db.SaveChanges();
-            int newId = db.Materials.Max(m => m.MaterialID);
-            return Json(newId, JsonRequestBehavior.AllowGet);
+            if (idToEdit == -1)
+            {
+                Material tmp = material;
+                User tmp_u = db.Users.Where(u => u.Id == uId).First();
+                tmp.Owner = tmp_u;
+                db.Materials.Add(tmp);
+                db.SaveChanges();
+                int newId = db.Materials.Max(m => m.MaterialID);
+                return Json(newId, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                Material toEdit = db.Materials.Where(m => m.MaterialID == idToEdit).First();
+                toEdit.Name = material.Name;
+                toEdit.Hardness = material.Hardness;
+                toEdit.Elasticity = material.Elasticity;
+                toEdit.StrengthBeyond = material.StrengthBeyond;
+                toEdit.Density = material.Density;
+                toEdit.HeatCapacity = material.HeatCapacity;
+                toEdit.ThermalConduct = material.ThermalConduct;
+                toEdit.ThermalExpansion = material.ThermalExpansion;
+                db.SaveChanges();
+                return Json(-1, JsonRequestBehavior.AllowGet);
+            }
         }
         /// <summary>
         /// Сюда стучится ajax для того чтобы удалить композит
