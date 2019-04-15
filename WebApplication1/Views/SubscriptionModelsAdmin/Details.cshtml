@@ -1,0 +1,43 @@
+﻿@model WebApplication1.Models.SubscriptionModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SubscriptionModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfProj)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfProj)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfShared)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfShared)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubCost)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.SubscriptionModelID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

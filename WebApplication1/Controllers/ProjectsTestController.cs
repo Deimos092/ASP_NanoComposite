@@ -257,5 +257,20 @@ namespace WebApplication1.Controllers
             int newId = db.Materials.Max(m => m.MaterialID);
             return Json(newId, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Сюда стучится ajax для того чтобы удалить композит
+        /// </summary>
+        /// <param name="CompositeID"></param>
+        /// <returns></returns>
+        public JsonResult DeleteComposite(int CompositeID)
+        {
+            Composite comp = db.Composits.Where(m => m.CompositeID == CompositeID).First();
+            var used = db.UsedMaterial.Where(u => u.Composite_.CompositeID == comp.CompositeID);
+            foreach (var uMt in used)
+                db.UsedMaterial.Remove(uMt);
+            db.Composits.Remove(comp);
+            db.SaveChanges();
+            return Json(comp.Name, JsonRequestBehavior.AllowGet);
+        }
     }
 }
