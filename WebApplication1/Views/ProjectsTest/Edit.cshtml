@@ -1,10 +1,10 @@
 ﻿@model WebApplication1.Models.Project
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Редактирование";
 }
 
-<h2>Edit</h2>
+<h2>Управление проектом</h2>
 
 
 @using (Html.BeginForm())
@@ -12,13 +12,14 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Project</h4>
+        <h4>@Model.ProjectName</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ProjectID)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <p class="control-label col-md-2"><b>Название проекта</b></p>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
@@ -26,20 +27,13 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ProjectDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.ProjectDescription, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <p class="control-label col-md-2"><b>Описание проекта</b></p>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.ProjectDescription, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.ProjectDescription, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.ProjectDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProjectDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProjectDate, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -51,11 +45,11 @@
     <div class="col-md-12">
         <div class="col-md-10">
             <table id="userTable" class="table table-hover">
-                <thead></thead>
+                <tr><th>#</th><th>Mail</th><th>Редактирование</th><th>Чтение</th></tr>
                 <tbody>
                     @foreach (var su in Model.SharedTo)
                     {
-                        <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.isWrite</td><td>@su.isRead</td></tr>
+                        <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td><td>@su.isRead</td></tr>
                     }
                 </tbody>
             </table>
