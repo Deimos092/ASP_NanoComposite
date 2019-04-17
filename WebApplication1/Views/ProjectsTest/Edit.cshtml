@@ -6,11 +6,12 @@
 
 <h2>Управление проектом</h2>
 
-
+<script data-require="jquery" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js"></script>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>@Model.ProjectName</h4>
         <hr />
@@ -42,26 +43,79 @@
         </div>
     </div>
 }
-    <div class="col-md-12">
-        <div class="col-md-10">
-            <table id="userTable" class="table table-hover">
-                <tr><th>#</th><th>Mail</th><th>Редактирование</th><th>Чтение</th></tr>
-                <tbody>
-                    @foreach (var su in Model.SharedTo)
-                    {
-                        <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td><td>@su.isRead</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-2">
-            @Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })
-            <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить</a>
-            <a class="btn btn-default" id="buttonEdit" style="width:100%" href="#" role="button">Редактировать</a>
-        </div>
+<div class="col-md-12">
+    <div class="col-md-10">
+        <table id="userTable" class="table table-hover">
+            <tr><th>#</th><th>Mail</th><th>Редактирование</th></tr>
+            <tbody>
+                @foreach (var su in Model.SharedTo)
+                {
+                    <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td><td>@su.isRead</td></tr>
+                }
+            </tbody>
+        </table>
     </div>
+    <div class="col-md-2">
+        <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button">Добавить</a>
+        @*@Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })*@
+        <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить</a>
+        <a class="btn btn-default" id="buttonEdit" style="width:100%" href="#" role="button">Редактировать</a>
+    </div>
+</div>
 <div>
     @Html.ActionLink("Вернуться назад", "Index")
+</div>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Добавление пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* mta = mailToAdd *@
+                <input type="text" id="mta" />
+                <button type="button" id="checkUser" class="btn btn-primary">Проверить</button>
+                <p class="hidden" id="resTest"></p>
+                <div id="checker">
+                    <input type="checkbox" class="custom-control-input" id="isEdit">
+                    <label class="custom-control-label" for="isEdit">Дать доступ на редактирование.</label>
+                </div>
+            </div>
+            <script>
+                function showRes(res) {
+                    if (res) {
+                        $('#resTest').removeClass('hidden');
+                        $('#resTest').text('Пользователь найден!');
+                        $('#resTest').css('color', 'green');
+                    }
+                    else {
+                        $('#resTest').removeClass('hidden');
+                        $('#resTest').text('Пользователь не найден!');
+                        $('#resTest').css('color', 'red');
+                    }
+                }
+                $('#checkUser').on('click', '', function (event) {
+                    var uMail = $('#mta').val();
+                    $.ajax({
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ user: uMail }),
+                        url: "/ProjectsTest/CheckForUser",
+                        success: function (res) {
+                            showRes(res);
+                        }
+                    });
+                });
+            </script>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

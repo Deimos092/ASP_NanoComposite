@@ -289,5 +289,17 @@ namespace WebApplication1.Controllers
             db.SaveChanges();
             return Json(comp.Name, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Проверка на существование пользователя
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public JsonResult CheckForUser(string user)
+        {
+            var usr = db.Users.Where(u => u.Email == user);
+            if (usr.Count() > 0)
+                return Json(true, JsonRequestBehavior.AllowGet);
+            else return Json(false, JsonRequestBehavior.AllowGet);
+        }
     }
 }
