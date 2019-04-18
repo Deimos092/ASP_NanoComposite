@@ -183,31 +183,60 @@ namespace WebApplication1.Controllers
         public ActionResult AddComposite(Composite composite, string json, int projectId)
         {
             List<temp> list = JsonConvert.DeserializeObject<List<temp>>(json);
-            foreach (var item in db.UsedMaterial.Where(m => m.Composite_.CompositeID == composite.CompositeID))
+            Composite comp;
+            if (composite.CompositeID == 0)
             {
-                db.UsedMaterial.Remove(item);
+                comp = new Composite();
             }
-            composite.UsedMaterials = new List<UsedMaterial>();
+            else
+            {
+                comp = db.Composits.Where(x => x.CompositeID == composite.CompositeID).First();
+            }
             foreach (var item in list)
             {
-                UsedMaterial m = new UsedMaterial();
-                m.isMassPercent = item.isMassPercent;
-                m.isMatrix = item.isMatrix;
-                m.Percent = item.percent;
-                m.Material = db.Materials.Where(a => a.MaterialID == item.id).First();
-                m.Composite_ = composite;
-                db.UsedMaterial.Add(m);
-                composite.UsedMaterials.Add(m);
+                UsedMaterial m;
+                var ml = comp.UsedMaterials.Where(x => x.Material.MaterialID == item.id);
+                if (ml.Count() != 0)
+                {
+                    m = ml.First();
+                    m.isMassPercent = item.isMassPercent;
+                    m.isMatrix = item.isMatrix;
+                    m.Percent = item.percent;
+                    m.Material = db.Materials.Where(a => a.MaterialID == item.id).First();
+                    m.Composite_ = comp;
+                    db.Entry(m).State = EntityState.Modified;
+                }
+                else
+                {
+                    m = new UsedMaterial();
+                    m.isMassPercent = item.isMassPercent;
+                    m.isMatrix = item.isMatrix;
+                    m.Percent = item.percent;
+                    m.Material = db.Materials.Where(a => a.MaterialID == item.id).First();
+                    m.Composite_ = comp;
+                    db.UsedMaterial.Add(m);
+                    comp.UsedMaterials.Add(m);
+                }
             }
-            db.Entry(composite).State = EntityState.Modified;
+            for (int i = 0; i < comp.UsedMaterials.Count; i++)
+            {
+                if (!list.Any(x=>x.id== comp.UsedMaterials.ElementAt(i).Material.MaterialID))
+                {
+                    db.UsedMaterial.Remove(comp.UsedMaterials.ElementAt(i));
+                    i--;
+                }
+            }
+
+
+            db.Entry(comp).State = EntityState.Modified;
             Project p = db.Projects.Where(m => m.ProjectID == projectId).First();
-            if (p.UsedComposits.Where(m=>m.CompositeID==composite.CompositeID).Count()==0)
+            if (p.UsedComposits.Where(m=>m.CompositeID== comp.CompositeID).Count()==0)
             {
-                p.UsedComposits.Add(composite);
+                p.UsedComposits.Add(comp);
             }
-            if (composite.CompositeID==0)
+            if (comp.CompositeID==0)
             {
-                db.Composits.Add(composite);
+                db.Composits.Add(comp);
             }
             db.SaveChanges();          
             return RedirectToAction("ProjectContent", new { id = projectId });

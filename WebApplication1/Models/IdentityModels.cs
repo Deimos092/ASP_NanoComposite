@@ -12,6 +12,8 @@ namespace WebApplication1.Models
     public class User : IdentityUser
     {
         public virtual SubscriptionModel SubModel { get; set; }
+        public DateTime SubscriptionStartDate { get; set; }
+        public DateTime SubscriptionEndDate { get; set; }
         public string APIKey { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
         {
@@ -27,6 +29,8 @@ namespace WebApplication1.Models
         public int NumberOfProj { get; set; }
         public int NumberOfShared { get; set; }
         public decimal SubCost { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
     public class Project //проект
     {

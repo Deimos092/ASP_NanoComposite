@@ -7,9 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Models;
+using System.Dynamic;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     public class UsersAdminController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -47,6 +49,8 @@ namespace WebApplication1.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.Subs = db.SubModel.ToList();
+            ViewBag.id = user.SubModel.SubscriptionModelID;
             return View(user);
         }
 
@@ -55,14 +59,23 @@ namespace WebApplication1.Controllers
         // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,APIKey,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] User user)
+        public ActionResult Edit([Bind(Include = "Id,APIKey,Email,EmailConfirmed,UserName,SubscriptionStartDate,SubscriptionEndDate")] User user, int idSub)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
+                var user2 = db.Users.Where(x => x.Id == user.Id).First();
+                user2.SubModel = db.SubModel.Where(x => x.SubscriptionModelID == idSub).First();
+                user2.APIKey = user.APIKey;
+                user2.Email = user.Email;
+                user2.EmailConfirmed = user.EmailConfirmed;
+                user2.UserName = user.UserName;
+                user2.SubscriptionStartDate = user.SubscriptionStartDate;
+                user2.SubscriptionEndDate = user.SubscriptionEndDate;
+                db.Entry(user2).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.Subs = db.SubModel.ToList();
             return View(user);
         }
 

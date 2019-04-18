@@ -10,6 +10,7 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     public class SubscriptionModelsAdminController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -46,7 +47,7 @@ namespace WebApplication1.Controllers
         // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SubscriptionModelID,NumberOfProj,NumberOfShared,SubCost")] SubscriptionModel subscriptionModel)
+        public ActionResult Create([Bind(Include = "SubscriptionModelID,NumberOfProj,NumberOfShared,SubCost,Name,Description")] SubscriptionModel subscriptionModel)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +79,7 @@ namespace WebApplication1.Controllers
         // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SubscriptionModelID,NumberOfProj,NumberOfShared,SubCost")] SubscriptionModel subscriptionModel)
+        public ActionResult Edit([Bind(Include = "SubscriptionModelID,NumberOfProj,NumberOfShared,SubCost,Name,Description")] SubscriptionModel subscriptionModel)
         {
             if (ModelState.IsValid)
             {
@@ -111,6 +112,11 @@ namespace WebApplication1.Controllers
         {
             SubscriptionModel subscriptionModel = db.SubModel.Find(id);
             db.SubModel.Remove(subscriptionModel);
+            var def = db.SubModel.Where(x => x.SubscriptionModelID == 1).First();
+            foreach (var item in db.Users.Where(x=>x.SubModel.SubscriptionModelID==id))
+            {
+                item.SubModel = def;
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
         }

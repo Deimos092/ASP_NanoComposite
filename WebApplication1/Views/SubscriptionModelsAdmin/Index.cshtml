@@ -1,31 +1,37 @@
 ﻿@model IEnumerable<WebApplication1.Models.SubscriptionModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Управление подписками";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Подписки</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Добавить", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.NumberOfProj)
+            Название
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.NumberOfShared)
+            Количество проектов
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.SubCost)
+            Количество участников
+        </th>
+        <th>
+            Стоимость ? (в день/месяц?)
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.NumberOfProj)
         </td>
@@ -36,9 +42,9 @@
             @Html.DisplayFor(modelItem => item.SubCost)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.SubscriptionModelID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.SubscriptionModelID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.SubscriptionModelID })
+            @Html.ActionLink("Редактировать", "Edit", new { id = item.SubscriptionModelID }) |
+            @Html.ActionLink("Подробнее", "Details", new { id=item.SubscriptionModelID }) |
+            @Html.ActionLink("Удалить", "Delete", new { id = item.SubscriptionModelID })
         </td>
     </tr>
 }

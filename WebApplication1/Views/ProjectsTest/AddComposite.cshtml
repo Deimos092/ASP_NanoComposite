@@ -68,9 +68,9 @@
                                         <td>@m.StrengthBeyond</td>
                                         <td>@m.ThermalConduct</td>
                                         <td>@m.ThermalExpansion</td>
-                                        <td hidden="hidden" class="isMassPercentCol"></td>
-                                        <td hidden="hidden" class="isMatrixCol"></td>
-                                        <td hidden="hidden" class="PercentCol"></td>
+                                        <td hidden="hidden" class="isMassPercentCol"><input type="checkbox" class="checkbox" /></td>
+                                        <td hidden="hidden" class="isMatrixCol"><input type="checkbox" class="checkbox" /></td>
+                                        <td hidden="hidden" class="PercentCol"><input type="checkbox" class="checkbox" /></td>
                                     </tr>
                                 }
                             }
@@ -204,9 +204,9 @@
                         $('#userTable > tbody').find("tr").each(function () {
                             var material = {
                                 id: $(this).find(".idCol").html(),
-                                percent: $(this).find(".PercentCol").html(),
-                                isMassPercent: $(this).find(".isMassPercentCol > .checkbox").attr("checked") == 'checked',
-                                isMatrix: $(this).find(".isMatrixCol > .checkbox").attr("checked") == 'checked'
+                                percent: $(this).find(".PercentCol").html().replace(",","."),
+                                isMassPercent: $(this).find(".isMassPercentCol > .checkbox").prop("checked"),
+                                isMatrix: $(this).find(".isMatrixCol > .checkbox").prop("checked")
                             };
                             array.push(material);
                         });

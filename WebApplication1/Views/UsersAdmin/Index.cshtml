@@ -9,22 +9,25 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+    <title>Управление пользователями</title>
 </head>
 <body>
     <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EmailConfirmed)
+                Email подтвержден
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AccessFailedCount)
+                Попыток входа
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                Имя пользователя
+            </th>
+            <th>
+                Окончание подписки
             </th>
             <th></th>
         </tr>
@@ -45,10 +48,14 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.DisplayFor(modelItem => item.SubscriptionEndDate)
                 </td>
+                <td>
+                    @Html.ActionLink("Редактировать", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Детали", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+                </td>
+
             </tr>
         }
 

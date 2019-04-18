@@ -5,14 +5,30 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Подписка</h2>
 
 <div>
-    <h4>SubscriptionModel</h4>
+    <h4>Подписка</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.NumberOfProj)
+            Название
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            Описание
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            Количество проектов
         </dt>
 
         <dd>
@@ -20,7 +36,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.NumberOfShared)
+            Количество участников
         </dt>
 
         <dd>
@@ -28,7 +44,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.SubCost)
+            Стоимость
         </dt>
 
         <dd>
@@ -38,6 +54,6 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.SubscriptionModelID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.SubscriptionModelID }) |
+    @Html.ActionLink("Назад", "Index")
 </p>
