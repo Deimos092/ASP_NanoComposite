@@ -323,11 +323,28 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public JsonResult CheckForUser(string user)
+        public JsonResult CheckForUser(string user, string owner)
         {
-            var usr = db.Users.Where(u => u.Email == user);
+            var usr = db.Users.Where(u => u.Email == user && u.EmailConfirmed == true && u.Id != owner);
             if (usr.Count() > 0)
                 return Json(true, JsonRequestBehavior.AllowGet);
+            else return Json(false, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult AddUserInProject(string user,bool isWrite , int project)
+        {
+            var Project = db.Projects.Where(p => p.ProjectID == project).First();
+            var usr = db.Users.Where(u => u.Email == user && u.EmailConfirmed == true && u.Id != Project.Owner.Id).ToList();
+            if (usr.Count() > 0)
+            {
+                Share nShare = new Share();
+                nShare.Shared = usr.ElementAt(0);
+                nShare.ProjectToShare = Project;
+                nShare.isWrite = isWrite;
+                nShare.isRead = true;
+                Project.SharedTo.Add(nShare);
+                db.SaveChanges();
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
             else return Json(false, JsonRequestBehavior.AllowGet);
         }
     }

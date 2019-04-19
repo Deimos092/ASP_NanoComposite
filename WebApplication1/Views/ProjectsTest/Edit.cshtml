@@ -57,7 +57,7 @@
             <tbody>
                 @foreach (var su in Model.SharedTo)
                 {
-                    <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td><td>@su.isRead</td></tr>
+                    <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td></tr>
                 }
             </tbody>
         </table>
@@ -66,7 +66,6 @@
         <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button">Добавить</a>
         @*@Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })*@
         <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить</a>
-        <a class="btn btn-default" id="buttonEdit" style="width:100%" href="#" role="button">Редактировать</a>
     </div>
 </div>
 <div>
@@ -100,7 +99,7 @@
                     }
                     else {
                         $('#resTest').removeClass('hidden');
-                        $('#resTest').text('Пользователь не найден!');
+                        $('#resTest').text('Пользователь не найден или еще не подтвердил почту!');
                         $('#resTest').css('color', 'red');
                     }
                 }
@@ -109,7 +108,7 @@
                     $.ajax({
                         type: 'POST',
                         contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ user: uMail }),
+                        data: JSON.stringify({ user: uMail, owner: '@Model.Owner.Id' }),
                         url: "/ProjectsTest/CheckForUser",
                         success: function (res) {
                             showRes(res);
@@ -119,7 +118,26 @@
             </script>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" id="addUser" class="btn btn-primary">Save changes</button>
+                <script>
+                    $('#addUser').on('click', '', function (event) {
+                    var uMail = $('#mta').val();
+                    $.ajax({
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ user: uMail, isWrite: $('#isEdit').prop('checked'), project: @Model.ProjectID }),
+                        url: "/ProjectsTest/AddUserInProject",
+                        success: function (res) {
+                            if (res) {
+                                console.log('added');
+                            }
+                            else {
+                                console.log('not added');
+                            }
+                        }
+                    });
+                });
+                </script>
             </div>
         </div>
     </div>
