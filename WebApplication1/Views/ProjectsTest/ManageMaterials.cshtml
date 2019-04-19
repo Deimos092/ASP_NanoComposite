@@ -146,6 +146,7 @@
                                 $('#userTable tr:last').after('<tr id="' + newId + '"><td>' + items[0].val() + '</td><td>' + Number(items[1].val()).toFixed(2) + '</td><td>' + Number(items[2].val()).toFixed(2) + '</td><td>' + Number(items[3].val()).toFixed(2) + '</td><td>' + Number(items[4].val()).toFixed(2) + '</td><td>' + Number(items[5].val()).toFixed(2) + '</td><td>' + Number(items[6].val()).toFixed(2) + '</td><td>' + Number(items[7].val()).toFixed(2) + '</td></tr>');
                             }
                             else {
+                                //потом будет улучшено
                                 var currentRow = $('#userTable .selected');
                                 $('#eMatId').val("");
                                 $('#buttonCancel').addClass('hidden');

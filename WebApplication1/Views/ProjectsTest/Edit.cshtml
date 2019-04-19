@@ -50,24 +50,46 @@
         </div>
     </div>
 }
-<div class="col-md-12">
-    <div class="col-md-10">
-        <table id="userTable" class="table table-hover">
-            <tr><th>#</th><th>Mail</th><th>Редактирование</th></tr>
-            <tbody>
-                @foreach (var su in Model.SharedTo)
-                {
-                    <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td></tr>
-                }
-            </tbody>
-        </table>
+    <div class="col-md-12">
+        <div class="col-md-10">
+            <table id="userTable" class="table table-hover">
+                <tr><th>#</th><th>Mail</th><th>Редактирование</th></tr>
+                <tbody>
+                    @foreach (var su in Model.SharedTo)
+                    {
+                        <tr id="@su.Shared.Id"><td>@su.ShareID</td><td>@su.Shared.Email</td><td>@su.isWrite</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <script>
+            $('#userTable').on('click', 'tbody tr', function (event) {
+                $(this).addClass('selected').siblings().removeClass('selected');
+            });
+        </script>
+        <div class="col-md-2">
+            <a class="btn btn-default" id="buttonAddU" style="width:100%" href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button">Добавить</a>
+            @*@Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })*@
+            <a class="btn btn-default" id="buttonDelU" style="width:100%" href="#" role="button">Удалить</a>
+            <script>
+                $('#buttonDelU').on('click', '', function (event) {
+                    var tr = $('#userTable .selected').closest('tr');
+                    var duser = tr.attr('id');
+                    if (tr) {
+                        $.ajax({
+                            type: 'POST',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify({ user: duser, projectID: @Model.ProjectID }),
+                            url: "/ProjectsTest/DeleteUserFromProject",
+                            success: function (res) {
+                                tr.remove();
+                            }
+                        });
+                    }
+                });
+            </script>
+        </div>
     </div>
-    <div class="col-md-2">
-        <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button">Добавить</a>
-        @*@Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })*@
-        <a class="btn btn-default" id="buttonDel" style="width:100%" href="#" role="button">Удалить</a>
-    </div>
-</div>
 <div>
     @Html.ActionLink("Вернуться назад", "Index")
 </div>
@@ -117,7 +139,7 @@
                 });
             </script>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" id="addUser" class="btn btn-primary">Save changes</button>
                 <script>
                     $('#addUser').on('click', '', function (event) {
@@ -127,12 +149,13 @@
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify({ user: uMail, isWrite: $('#isEdit').prop('checked'), project: @Model.ProjectID }),
                         url: "/ProjectsTest/AddUserInProject",
-                        success: function (res) {
-                            if (res) {
-                                console.log('added');
+                        success: function (ret) {
+                            if (ret[0].Value) {
+                                $('#userTable tr:last').after('<tr id="' + ret[1].Value + '"><td>' + ret[2].Value + '</td><td>' + uMail + '</td><td>' + ret[3].Value + '</td></tr>');
                             }
                             else {
-                                console.log('not added');
+                                $('#closeModal').trigger('click');
+                                alert('Неудалось добавить пользователя!');
                             }
                         }
                     });

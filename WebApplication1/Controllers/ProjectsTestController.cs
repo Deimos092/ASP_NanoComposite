@@ -330,11 +330,23 @@ namespace WebApplication1.Controllers
                 return Json(true, JsonRequestBehavior.AllowGet);
             else return Json(false, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Добавление юзера в проект
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="isWrite"></param>
+        /// <param name="project"></param>
+        /// <returns></returns>
         public JsonResult AddUserInProject(string user,bool isWrite , int project)
         {
+            dynamic ret = new ExpandoObject();
             var Project = db.Projects.Where(p => p.ProjectID == project).First();
+            //
+            //нужно для проверок на повторения, и на создателя проекта
             var usr = db.Users.Where(u => u.Email == user && u.EmailConfirmed == true && u.Id != Project.Owner.Id).ToList();
-            if (usr.Count() > 0)
+            var inShare = Project.SharedTo.Where(s => s.Shared.Email == user).ToList();
+            //
+            if (usr.Count() > 0 && inShare.Count() < 1)
             {
                 Share nShare = new Share();
                 nShare.Shared = usr.ElementAt(0);
@@ -343,9 +355,35 @@ namespace WebApplication1.Controllers
                 nShare.isRead = true;
                 Project.SharedTo.Add(nShare);
                 db.SaveChanges();
-                return Json(true, JsonRequestBehavior.AllowGet);
+
+                ret.res = true;
+                ret.usr = usr.ElementAt(0).Id;
+                ret.newShId = db.Shares.Max(s => s.ShareID);
+                ret.isE = isWrite;
+                return Json(ret, JsonRequestBehavior.AllowGet);
             }
-            else return Json(false, JsonRequestBehavior.AllowGet);
+            else
+            {
+                ret.res = false;
+                return Json(ret, JsonRequestBehavior.AllowGet);
+            }
         }
+        /// <summary>
+        /// удаление пользователя из бд
+        /// </summary>
+        /// <param name="user">id юзера</param>
+        /// <param name="projectID">id проекта</param>
+        /// <returns></returns>
+        public JsonResult DeleteUserFromProject(string user, int projectID)
+        {
+            var duser = db.Users.Where(u => u.Id == user).First();
+            var project = db.Projects.Where(p => p.ProjectID == projectID).First();
+            var share = db.Shares.Where(s => s.Shared.Id == duser.Id && s.ProjectToShare.ProjectID == project.ProjectID).First();
+            project.SharedTo.Remove(share);
+            db.Shares.Remove(share);
+            db.SaveChanges();
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
