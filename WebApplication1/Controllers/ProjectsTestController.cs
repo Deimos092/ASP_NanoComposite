@@ -138,6 +138,10 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ProjectID,ProjectName,ProjectDescription,ProjectDate")] Project project)
         {
+            if (project.ProjectName==null)
+            {
+                project.ProjectName = "Без названия";
+            }
             if (!isInProject(project.ProjectID,true)) return RedirectToAction("Index");
             if (ModelState.IsValid)
             {

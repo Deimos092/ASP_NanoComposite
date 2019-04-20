@@ -19,26 +19,27 @@
         <h4>Composite</h4>
         <hr />
         <div class="col-md-12">
-            <div class="col-sm-6">
+            <div class="col-sm-6" style="overflow: auto">
                 <table id="userTable" class="table table-hover">
                     <tbody>
+                        <tr><th>Название</th><th>Плот.</th><th>Эластич.</th><th>Тверд.</th><th>Теплоем.</th><th>Пред. силы</th><th>Теплопровод.</th><th>Тепл. расшир</th><th>M%/V%</th><th>М</th><th>%</th></tr>
                         @foreach (var c in Model.UsedMaterials)
                         {
-                        <tr>
+                            <tr>
 
-                            <th scope="row">@c.Material.Name</th>
-                            <td class="idCol" hidden="hidden">@c.Material.MaterialID</td>
-                            <td>@c.Material.Density</td>
-                            <td>@c.Material.Elasticity</td>
-                            <td>@c.Material.Hardness</td>
-                            <td>@c.Material.HeatCapacity</td>
-                            <td>@c.Material.StrengthBeyond</td>
-                            <td>@c.Material.ThermalConduct</td>
-                            <td>@c.Material.ThermalExpansion</td>
-                            <td class="isMassPercentCol"><input type="checkbox" class="checkbox" @(c.isMassPercent ? "checked=checked" : "")></td>
-                            <td class="isMatrixCol"><input type="checkbox" class="checkbox" @(c.isMatrix ? "checked=checked" : "")></td>
-                            <td class="PercentCol">@c.Percent</td>
-                        </tr>
+                                <th scope="row">@c.Material.Name</th>
+                                <td class="idCol" hidden="hidden">@c.Material.MaterialID</td>
+                                <td>@c.Material.Density</td>
+                                <td>@c.Material.Elasticity</td>
+                                <td>@c.Material.Hardness</td>
+                                <td>@c.Material.HeatCapacity</td>
+                                <td>@c.Material.StrengthBeyond</td>
+                                <td>@c.Material.ThermalConduct</td>
+                                <td>@c.Material.ThermalExpansion</td>
+                                <td class="isMassPercentCol"><input type="checkbox" class="checkbox" @(c.isMassPercent ? "checked=checked" : "")></td>
+                                <td class="isMatrixCol"><input type="checkbox" class="checkbox" @(c.isMatrix ? "checked=checked" : "")></td>
+                                <td class="PercentCol">@c.Percent</td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -51,31 +52,32 @@
             <div class="col-sm-5" style="overflow: auto; height:500px; max-height:fit-content">
                 <table id="userTable1" class="table table-hover">
                     <tbody>
+                        <tr><th>Название</th><th>Плот.</th><th>Эластич.</th><th>Тверд.</th><th>Теплоем.</th><th>Пред. силы</th><th>Теплопровод.</th><th>Тепл. расшир</th></tr>
                         @using (WebApplication1.Models.ApplicationDbContext c = new WebApplication1.Models.ApplicationDbContext())
                         {
                             int t = ViewBag.ProjectId;
-                            var owner = c.Projects.Where(x=>x.ProjectID==t).First().Owner.Id;
+                            var owner = c.Projects.Where(x => x.ProjectID == t).First().Owner.Id;
                             var list = c.Shares.Where(w => w.ProjectToShare.ProjectID == t).ToList();
                             foreach (var share in list)
                             {
-                                foreach (var m in c.Materials.Where(m => m.Owner.Id == owner || m.Owner.Id==share.Shared.Id))
+                                foreach (var m in c.Materials.Where(m => m.Owner.Id == owner || m.Owner.Id == share.Shared.Id))
                                 {
                                     if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
                                     {
-                                    <tr>
-                                        <th scope="row">@m.Name</th>
-                                        <td class="idCol" hidden="hidden">@m.MaterialID</td>
-                                        <td>@m.Density</td>
-                                        <td>@m.Elasticity</td>
-                                        <td>@m.Hardness</td>
-                                        <td>@m.HeatCapacity</td>
-                                        <td>@m.StrengthBeyond</td>
-                                        <td>@m.ThermalConduct</td>
-                                        <td>@m.ThermalExpansion</td>
-                                        <td hidden="hidden" class="isMassPercentCol"><input type="checkbox" class="checkbox" /></td>
-                                        <td hidden="hidden" class="isMatrixCol"><input type="checkbox" class="checkbox" /></td>
-                                        <td hidden="hidden" class="PercentCol"><input type="checkbox" class="checkbox" /></td>
-                                    </tr>
+                                        <tr>
+                                            <th scope="row">@m.Name</th>
+                                            <td class="idCol" hidden="hidden">@m.MaterialID</td>
+                                            <td>@m.Density</td>
+                                            <td>@m.Elasticity</td>
+                                            <td>@m.Hardness</td>
+                                            <td>@m.HeatCapacity</td>
+                                            <td>@m.StrengthBeyond</td>
+                                            <td>@m.ThermalConduct</td>
+                                            <td>@m.ThermalExpansion</td>
+                                            <td hidden="hidden" class="isMassPercentCol"><input type="checkbox" class="checkbox" /></td>
+                                            <td hidden="hidden" class="isMatrixCol"><input type="checkbox" class="checkbox" /></td>
+                                            <td hidden="hidden" class="PercentCol"><input type="checkbox" class="checkbox" /></td>
+                                        </tr>
                                     }
                                 }
                             }

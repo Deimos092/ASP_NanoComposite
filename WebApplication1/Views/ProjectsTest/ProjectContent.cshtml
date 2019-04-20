@@ -12,27 +12,28 @@
     <div class="col-md-10">
         <table id="userTable" class="table table-hover">
             <tbody>
+                <tr><th>Название</th><th>Эластичность</th><th>Ф. когезии</th><th>Твердость</th><th>Пористость</th><th>Прочность</th><th>Теплопроводность</th></tr>
                 @foreach (var c in Model.UsedComposits)
                 {
                     <tr id="@c.CompositeID"><td>@c.Name</td><td>@c.Elasticity</td><td>@c.FactorKogezia</td><td>@c.Hardness</td><td>@c.Porosity</td><td>@c.Strength</td><td>@c.ThermalConduct</td></tr>
                 }
                 @*@using (ApplicationDbContext c = new ApplicationDbContext())
-                    {
-                        //Composite composite = new Composite() { Name = "Test", Elasticity = 1, FactorKogezia = 2, Hardness = 3, Porosity = 4, Strength = 5, ThermalConduct = 6 };
-                        //c.Composits.Add(composite);
-                        Project p = c.Projects.Where(l => l.ProjectID == Model.ProjectID).First();
-                        p.UsedComposits = new List<Composite>();
-                        p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 1).First());
-                        p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 2).First());
-                        p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 3).First());
-                        c.SaveChanges();
-                    }*@
+        {
+            //Composite composite = new Composite() { Name = "Test", Elasticity = 1, FactorKogezia = 2, Hardness = 3, Porosity = 4, Strength = 5, ThermalConduct = 6 };
+            //c.Composits.Add(composite);
+            Project p = c.Projects.Where(l => l.ProjectID == Model.ProjectID).First();
+            p.UsedComposits = new List<Composite>();
+            p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 1).First());
+            p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 2).First());
+            p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 3).First());
+            c.SaveChanges();
+        }*@
 
                 @*<tr id="1"><td>content</td><td>content</td><td>content</td></tr>
-                    <tr><td>content</td><td>content</td><td>content</td></tr>
-                    <tr><td>content</td><td>content</td><td>content</td></tr>
-                    <tr><td>content</td><td>content</td><td>content</td></tr>
-                    <tr><td>content</td><td>content</td><td>content</td></tr>*@
+        <tr><td>content</td><td>content</td><td>content</td></tr>
+        <tr><td>content</td><td>content</td><td>content</td></tr>
+        <tr><td>content</td><td>content</td><td>content</td></tr>
+        <tr><td>content</td><td>content</td><td>content</td></tr>*@
             </tbody>
         </table>
     </div>
