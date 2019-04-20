@@ -53,11 +53,15 @@
                     <tbody>
                         @using (WebApplication1.Models.ApplicationDbContext c = new WebApplication1.Models.ApplicationDbContext())
                         {
-
-                            foreach (var m in c.Materials.Where(m => m.Owner.UserName == User.Identity.Name))
+                            int t = ViewBag.ProjectId;
+                            var owner = c.Projects.Where(x=>x.ProjectID==t).First().Owner.Id;
+                            var list = c.Shares.Where(w => w.ProjectToShare.ProjectID == t).ToList();
+                            foreach (var share in list)
                             {
-                                if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
+                                foreach (var m in c.Materials.Where(m => m.Owner.Id == owner || m.Owner.Id==share.Shared.Id))
                                 {
+                                    if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
+                                    {
                                     <tr>
                                         <th scope="row">@m.Name</th>
                                         <td class="idCol" hidden="hidden">@m.MaterialID</td>
@@ -72,6 +76,7 @@
                                         <td hidden="hidden" class="isMatrixCol"><input type="checkbox" class="checkbox" /></td>
                                         <td hidden="hidden" class="PercentCol"><input type="checkbox" class="checkbox" /></td>
                                     </tr>
+                                    }
                                 }
                             }
                         }

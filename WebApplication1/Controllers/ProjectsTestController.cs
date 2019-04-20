@@ -21,10 +21,58 @@ namespace WebApplication1.Controllers
         public ActionResult Index()
         {
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).First();
-            var temp = db.Projects.Where(u => u.Owner.Id==user.Id).ToList();
+            var temp = db.Projects.Where(u => u.Owner.Id==user.Id || db.Shares.Any(s=>s.Shared.Id==user.Id && u.ProjectID==s.ProjectToShare.ProjectID)).ToList();
             return View(temp);
         }
-
+        public bool isInProject(int projectID, bool edit)
+        {
+            if (db.Projects.Any(x=>x.Owner.UserName== User.Identity.Name && x.ProjectID==projectID))
+            {
+                return true;
+            }
+            if (edit)
+            {
+                if (db.Shares.Any(x => x.ProjectToShare.ProjectID == projectID && x.Shared.UserName == User.Identity.Name && x.isWrite))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (db.Shares.Any(x => x.ProjectToShare.ProjectID == projectID && x.Shared.UserName == User.Identity.Name))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool isMaterialOwner(int materialId)
+        {
+            if (db.Materials.Any(x => x.MaterialID == materialId && x.Owner.UserName == User.Identity.Name))
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool isVerified(int compId, bool edit)
+        {
+            var t = db.Projects.Where(p => p.UsedComposits.Any(x => x.CompositeID == compId)).First();
+            if (edit)
+            {
+                if (db.Composits.Any(x => x.CompositeID == compId && db.Shares.Any(z => z.ProjectToShare.ProjectID == t.ProjectID && z.Shared.UserName == User.Identity.Name && z.isWrite)))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (db.Composits.Any(x => x.CompositeID == compId && db.Shares.Any(z => z.ProjectToShare.ProjectID == t.ProjectID && z.Shared.UserName == User.Identity.Name)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         // GET: ProjectsTest/Details/5
         public ActionResult Details(int? id)
         {
@@ -32,6 +80,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            if (!isInProject(id.Value,false)) return RedirectToAction("Index");
             Project project = db.Projects.Find(id);
             if (project == null)
             {
@@ -73,6 +122,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            if (!isInProject(id.Value,true)) return RedirectToAction("Index");
             Project project = db.Projects.Find(id);
             if (project == null)
             {
@@ -88,6 +138,7 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ProjectID,ProjectName,ProjectDescription,ProjectDate")] Project project)
         {
+            if (!isInProject(project.ProjectID,true)) return RedirectToAction("Index");
             if (ModelState.IsValid)
             {
                 db.Entry(project).State = EntityState.Modified;
@@ -100,6 +151,7 @@ namespace WebApplication1.Controllers
         // GET: ProjectsTest/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!isInProject(id.Value,true)) return RedirectToAction("Index");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -117,6 +169,7 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (!isInProject(id,true)) return RedirectToAction("Index");
             Project project = db.Projects.Find(id);
             db.Projects.Remove(project);
             db.SaveChanges();
@@ -134,6 +187,7 @@ namespace WebApplication1.Controllers
 
         public ActionResult ProjectContent(int id)
         {
+            if(!isInProject(id,false)) return RedirectToAction("Index");
             Project project = db.Projects.Find(id);
             return View(project);
         }
@@ -145,6 +199,7 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public ActionResult AddComposite(int projectId, int? compositeId)
         {
+            if (!isInProject(projectId,true)) return RedirectToAction("Index");
             Composite composite;
             ViewBag.ProjectId = projectId;
             if (compositeId.HasValue)
@@ -182,6 +237,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult AddComposite(Composite composite, string json, int projectId)
         {
+            if (!isInProject(projectId,true)) return RedirectToAction("Index");
             List<temp> list = JsonConvert.DeserializeObject<List<temp>>(json);
             Composite comp;
             if (composite.CompositeID == 0)
@@ -269,6 +325,7 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public JsonResult DeleteMaterial(int MaterialID)
         {
+            if (!isMaterialOwner(MaterialID)) return Json("", JsonRequestBehavior.AllowGet);
             Material mt = db.Materials.Where(m => m.MaterialID == MaterialID).First();
             var usedMts = db.UsedMaterial.Where(um => um.Material.MaterialID == mt.MaterialID);
             //удаление из UsedMaterials чтобы не было ошибки
@@ -298,6 +355,7 @@ namespace WebApplication1.Controllers
             }
             else
             {
+                if (!isMaterialOwner(idToEdit)) return Json("", JsonRequestBehavior.AllowGet);
                 Material toEdit = db.Materials.Where(m => m.MaterialID == idToEdit).First();
                 toEdit.Name = material.Name;
                 toEdit.Hardness = material.Hardness;
@@ -318,6 +376,7 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public JsonResult DeleteComposite(int CompositeID)
         {
+            if (!isVerified(CompositeID, true)) return Json("", JsonRequestBehavior.AllowGet);
             Composite comp = db.Composits.Where(m => m.CompositeID == CompositeID).First();
             var used = db.UsedMaterial.Where(u => u.Composite_.CompositeID == comp.CompositeID);
             foreach (var uMt in used)
@@ -347,6 +406,7 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public JsonResult AddUserInProject(string user,bool isWrite , int project)
         {
+            if (!isInProject(project,true)) return Json(false, JsonRequestBehavior.AllowGet);
             dynamic ret = new ExpandoObject();
             var Project = db.Projects.Where(p => p.ProjectID == project).First();
             //
@@ -384,6 +444,7 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public JsonResult DeleteUserFromProject(string user, int projectID)
         {
+            if (!isInProject(projectID,true)) return Json(false, JsonRequestBehavior.AllowGet);
             var duser = db.Users.Where(u => u.Id == user).First();
             var project = db.Projects.Where(p => p.ProjectID == projectID).First();
             var share = db.Shares.Where(s => s.Shared.Id == duser.Id && s.ProjectToShare.ProjectID == project.ProjectID).First();
