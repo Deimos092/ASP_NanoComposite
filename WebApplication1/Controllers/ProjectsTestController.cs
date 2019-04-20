@@ -187,11 +187,19 @@ namespace WebApplication1.Controllers
             if (composite.CompositeID == 0)
             {
                 comp = new Composite();
+                comp.UsedMaterials = new List<UsedMaterial>();
             }
             else
             {
                 comp = db.Composits.Where(x => x.CompositeID == composite.CompositeID).First();
             }
+            comp.Elasticity = composite.Elasticity;
+            comp.FactorKogezia = composite.FactorKogezia;
+            comp.Hardness = composite.Hardness;
+            comp.Name = composite.Name;
+            comp.Porosity = composite.Porosity;
+            comp.Strength = composite.Strength;
+            comp.ThermalConduct = composite.ThermalConduct;
             foreach (var item in list)
             {
                 UsedMaterial m;
