@@ -382,6 +382,7 @@ namespace WebApplication1.Controllers
         /// <param name="user">id юзера</param>
         /// <param name="projectID">id проекта</param>
         /// <returns></returns>
+        //сделать обработчик на то что просто так нажали кнопку delete
         public JsonResult DeleteUserFromProject(string user, int projectID)
         {
             var duser = db.Users.Where(u => u.Id == user).First();
