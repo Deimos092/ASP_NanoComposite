@@ -130,8 +130,8 @@
                 })
                 //var u =  Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(Model.User));
                 var mat = {
-                    Owner: null, Name: items[0].val(), Hardness: items[1].val(), Elasticity: items[2].val(), StrengthBeyond:items[3].val(), Density: items[4].val(),
-                    HeatCapacity: items[5].val(), ThermalConduct: items[6].val(), ThermalExpansion: items[7].val()
+                    Owner: null, Name: items[0].val(), Hardness: Number(items[1].val()), Elasticity: Number(items[2].val()), StrengthBeyond:Number(items[3].val()), Density: Number(items[4].val()),
+                    HeatCapacity: Number(items[5].val()), ThermalConduct: Number(items[6].val()), ThermalExpansion: Number(items[7].val())
                 }
                 var eId = Number($('#eMatId').val());
                 if (flag) {
