@@ -458,6 +458,105 @@ namespace WebApplication1.Controllers
             db.SaveChanges();
             return Json(true, JsonRequestBehavior.AllowGet);
         }
-
+        public JsonResult CalculateAll(int id)
+        {
+            Composite TmpComposite = db.Composits.Where(x => x.CompositeID == id).First(); 
+            string[] props = new string[7] { "Elasticity", "ThermalExpansion", "Hardness", "StrengthBeyond", "Density", "HeatCapacity", "ThermalConduct" };
+            string[] rus = new string[7] { "E - Модуль упругости, МПа", "α - коэф.термического расширения", "HB - Твердость, МПа", "σ^2 - Предел прочности, МПа", "p - Плотность, кг/м^3", "Cp - Теплоемкость, Дж/кг*К", "λ - Теплопроводность, Вт/м*град" };
+            dynamic ret = new ExpandoObject();
+            ret.props = new ExpandoObject[props.Length];
+            for (int i = 0; i < props.Length; i++)
+            {
+                ret.props[i] = new ExpandoObject();
+                ret.props[i].name = props[i];
+                ret.props[i].x = new decimal[101];
+                ret.props[i].y = new decimal[101];
+                ret.props[i].rus = rus[i];
+                for (int j = 0; j <= 100; j++)
+                {
+                    ret.props[i].x[j] = j;
+                    ret.props[i].y[j] = CalculateParamsForData(props[i], j/100M, TmpComposite);
+                }
+            }
+            return Json(ret, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult Calculate(int id, decimal porosity)
+        {
+            Composite TmpComposite = db.Composits.Where(x => x.CompositeID == id).First();
+            string[] props = new string[7] { "Elasticity", "ThermalExpansion", "Hardness", "StrengthBeyond", "Density", "HeatCapacity", "ThermalConduct" };
+            dynamic ret = new ExpandoObject();
+            ret.props = props;
+            ret.values = new decimal[7];
+            for (int i = 0; i < props.Length; i++)
+            {
+                ret.values[i] = CalculateParamsForData(props[i], porosity/100M, TmpComposite);
+            }
+            return Json(ret, JsonRequestBehavior.AllowGet);
+        }
+        public decimal CalculateParamsForData(string KeyNames, decimal porosity, Composite TmpComposite)
+        {
+            Dictionary<string, decimal> CalcResult = new Dictionary<string, decimal>();
+            CalcResult[KeyNames] = 0;
+            switch (KeyNames)
+            {
+                case "Elasticity":
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.Elasticity);
+                    return CalcResult[KeyNames] * (decimal)Math.Exp((double)-TmpComposite.Elasticity * (double)porosity);
+                case "ThermalExpansion":
+                    decimal tempDivision = 0;
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                    {
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.ThermalExpansion, material.Material.ThermalConduct);
+                        tempDivision += material.Percent * material.Material.ThermalConduct;
+                    }
+                    CalcResult[KeyNames] /= tempDivision;
+                    var temp = Math.Pow(1.0 - (double)porosity, 1.0 / 3.0);
+                    var temp2 = (decimal)temp * 10;
+                    return CalcResult[KeyNames] * temp2;
+                case "Hardness":
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.Hardness);
+                    return CalcResult[KeyNames] * (decimal)Math.Exp((double)-TmpComposite.Hardness * (double)porosity);
+                case "StrengthBeyond":
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.StrengthBeyond);
+                    if (TmpComposite.UsedMaterials.Count == 4)
+                    {
+                        var tempMatrix = TmpComposite.UsedMaterials.Where(x => x.isMatrix).First();
+                        CalcResult[KeyNames] = tempMatrix.Material.StrengthBeyond *
+                                                (decimal)(1.0 - 1.21 * (double)Math.Pow(1.0 - (double)tempMatrix.Percent / 100.0, 1.0 / 3.0))
+                                                * TmpComposite.FactorKogezia;
+                    }
+                    return CalcResult[KeyNames] * (decimal)Math.Exp((double)-TmpComposite.Strength * (double)porosity);
+                case "Density":
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.Density);
+                    return CalcResult[KeyNames] * (1 - porosity);
+                case "HeatCapacity":
+                    decimal tempForthermalCapacity = 1;
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                    {
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.HeatCapacity);
+                        if (material.isMatrix) tempForthermalCapacity *= 0.2M * material.Percent * 0.01M;
+                        else tempForthermalCapacity *= material.Percent * 0.01M;
+                    }
+                    return CalcResult[KeyNames] *= (1.0M + tempForthermalCapacity);
+                case "ThermalConduct":
+                    foreach (UsedMaterial material in TmpComposite.UsedMaterials)
+                        CalcResult[KeyNames] = CalcPercent(material.Percent * 0.01M, KeyNames, CalcResult, material.Material.ThermalConduct);
+                    return CalcResult[KeyNames] * (decimal)Math.Exp((double)-TmpComposite.ThermalConduct * (double)porosity) * 10;
+                default:
+                    break;
+            }
+            return 0.0M;
+        }
+        private decimal CalcPercent(decimal percent, string KeyNames, Dictionary<string, decimal> CalcResult, params decimal[] property)
+        {
+            if (KeyNames == "ThermalExpansion")
+                return CalcResult[KeyNames] + property[0] * percent * property[1];//Для него немного по другому считается поэтому условие
+            else
+                return CalcResult[KeyNames] + property[0] * percent;
+        }
     }
 }

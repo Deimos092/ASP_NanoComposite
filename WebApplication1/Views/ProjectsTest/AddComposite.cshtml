@@ -25,7 +25,7 @@
                         <tr><th>Название</th><th>Плот.</th><th>Эластич.</th><th>Тверд.</th><th>Теплоем.</th><th>Пред. силы</th><th>Теплопровод.</th><th>Тепл. расшир</th><th>M%/V%</th><th>М</th><th>%</th></tr>
                         @foreach (var c in Model.UsedMaterials)
                         {
-                            <tr>
+                            <tr class="data">
 
                                 <th scope="row">@c.Material.Name</th>
                                 <td class="idCol" hidden="hidden">@c.Material.MaterialID</td>
@@ -64,7 +64,7 @@
                                 {
                                     if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
                                     {
-                                        <tr>
+                                        <tr class="data">
                                             <th scope="row">@m.Name</th>
                                             <td class="idCol" hidden="hidden">@m.MaterialID</td>
                                             <td>@m.Density</td>
@@ -200,7 +200,7 @@
                 $(function () {
                     $("#submit").click(function (e) {
                         var sum = 0;
-                        $('#userTable > tbody > tr').find(".PercentCol").each(function () {
+                        $('#userTable > tbody > .data').find(".PercentCol").each(function () {
                             sum += parseFloat($(this).html());
                         });
                         if (sum != 100) {
@@ -208,7 +208,7 @@
                             e.preventDefault();
                         }
                         var array = [];
-                        $('#userTable > tbody').find("tr").each(function () {
+                        $('#userTable > tbody').find(".data").each(function () {
                             var material = {
                                 id: $(this).find(".idCol").html(),
                                 percent: $(this).find(".PercentCol").html().replace(",","."),

@@ -6,6 +6,7 @@
 }
 
 <h2>ProjectContent</h2>
+<script type="text/javascript" src="~/Scripts/canvasjs.min.js"></script>
 <script data-require="jquery" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js"></script>
 <div class="col-md-12">
@@ -17,23 +18,6 @@
                 {
                     <tr id="@c.CompositeID"><td>@c.Name</td><td>@c.Elasticity</td><td>@c.FactorKogezia</td><td>@c.Hardness</td><td>@c.Porosity</td><td>@c.Strength</td><td>@c.ThermalConduct</td></tr>
                 }
-                @*@using (ApplicationDbContext c = new ApplicationDbContext())
-        {
-            //Composite composite = new Composite() { Name = "Test", Elasticity = 1, FactorKogezia = 2, Hardness = 3, Porosity = 4, Strength = 5, ThermalConduct = 6 };
-            //c.Composits.Add(composite);
-            Project p = c.Projects.Where(l => l.ProjectID == Model.ProjectID).First();
-            p.UsedComposits = new List<Composite>();
-            p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 1).First());
-            p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 2).First());
-            p.UsedComposits.Add(c.Composits.Where(l => l.CompositeID == 3).First());
-            c.SaveChanges();
-        }*@
-
-                @*<tr id="1"><td>content</td><td>content</td><td>content</td></tr>
-        <tr><td>content</td><td>content</td><td>content</td></tr>
-        <tr><td>content</td><td>content</td><td>content</td></tr>
-        <tr><td>content</td><td>content</td><td>content</td></tr>
-        <tr><td>content</td><td>content</td><td>content</td></tr>*@
             </tbody>
         </table>
     </div>
@@ -45,7 +29,7 @@
     </div>
     <script>
         $('#userTable').on('click', 'tbody tr', function (event) {
-            $(this).addClass('selected').siblings().removeClass('selected');
+            $(this).addClass('selected').siblings().removeClass('selected');            
         });
         $('#buttonEdit').on('click', '', function (event) {
             var tr = $('#userTable .selected').closest("tr");
@@ -75,26 +59,44 @@
 
 <div class="col-md-12">
     <div class="col-md-9">
-        <canvas id="lineChart" width="800" height="600" class="chartjs-render-monitor"></canvas>
+        <div class="col-md-12">
+            @*<div class="col-md-6">
+                <div id="lineChart0" style="width: 45%; height: 300px;display: inline-block;"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="lineChart1" style="width: 45%; height: 300px;display: inline-block;"></div>
+            </div>*@
+            <div id="lineChart0" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+            <div id="lineChart1" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+        </div>
+        <div class="col-md-12">
+            <div id="lineChart2" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+            <div id="lineChart3" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+        </div>
+        <div class="col-md-12">
+            <div id="lineChart4" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+            <div id="lineChart5" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+        </div>
+        <div class="col-md-12">
+            <div id="lineChart6" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+        </div>
     </div>
     <div class="col-md-3">
         <div class="range">
-            <input type="range" name="range" min="1" max="100" value="50" onmousemove="range.value=value">
+            <input id="porosity" type="range" name="range" min="1" max="100" value="50">
             <output id="range">50</output>
         </div>
         <div class="col-md-12" style="padding-left:0;padding-right:0">
             <table id="userTable" class="table table-hover">
                 <tbody>
-                    <tr><td style="padding-left:2px">Text:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text123:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
-                    <tr><td style="padding-left:2px">Text12312:</td><td style="padding-right:2px"><input type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px"><a class="btn btn-default" id="calculate" style="width:100%" href="#" role="button">Расчитать</a></td></tr>
+                    <tr><td style="padding-left:2px">E - Модуль упругости, МПа:</td><td style="padding-right:2px"><input id="Elasticity" type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">α - коэф.термического расширения:</td><td style="padding-right:2px"><input id="ThermalExpansion" type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">HB - Твердость, МПа:</td><td style="padding-right:2px"><input id="Hardness" type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">σ^2 - Предел прочности, МПа:</td><td style="padding-right:2px"><input id="StrengthBeyond" type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">p - Плотность, кг/м^3:</td><td style="padding-right:2px"><input id="Density" type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">Cp - Теплоемкость, Дж/кг*К:</td><td style="padding-right:2px"><input id="HeatCapacity" type="text" style="width:100%; padding:1px"></td></tr>
+                    <tr><td style="padding-left:2px">λ - Теплопроводность, Вт/м*град:</td><td style="padding-right:2px"><input id="ThermalConduct" type="text" style="width:100%; padding:1px"></td></tr>
                 </tbody>
             </table>
         </div>
@@ -105,4 +107,82 @@
 
 <script type="text/javascript" src="~/Scripts/Chart.js"></script>
 
+<script>
+    var last = 0;
+    var data1 = 0;
+
+    function FillTextbox() {
+        for (var i = 0; i < data1.Value.length; i++) {
+            var el = $('#' + data1.Value[i][0].Value);
+            el.val(data1.Value[i][2].Value[$('#range').html()]);
+        }
+    }
+
+    $('#calculate').on('click', '', function (event) {
+        var tr = $('#userTable .selected').closest("tr");
+        if (tr.length == 1) {
+            if (last != tr.attr('id')) {
+                display(tr.attr('id'));
+                last = tr.attr('id');
+            } else {
+                FillTextbox();
+            }
+        }
+
+    });
+    $(document).on('input', '#porosity', function () {
+        $('#range').html($(this).val());
+        if ($('#userTable .selected').closest("tr").length==1) {
+            FillTextbox();
+        }
+        
+    });
+
+    function DisplayChartFromData(data, dstElement) {
+        dataArray = [];
+
+        for (var i = 0; i < data[1].Value.length; i++) {
+            var d = new Object();
+            d.x = data[1].Value[i];
+            d.y = data[2].Value[i];
+            dataArray.push(d)
+        }
+        var chart = new CanvasJS.Chart(dstElement, {
+            theme: "light2",
+            zoomEnabled: true,
+            animationEnabled: true,
+            title: {
+                text: data[3].Value
+            },
+            data: [
+                {
+                    type: "line",
+                    dataPoints: dataArray
+                }
+            ]
+        });
+        chart.render();
+    }
+
+    function display(id) {
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            data: "{ id:" + id + "}",
+            url: "/ProjectsTest/CalculateAll",
+            success: function (result) {
+                data1 = result[0];
+                FillTextbox();
+                DisplayChartFromData(result[0].Value[0], "lineChart0");
+                DisplayChartFromData(result[0].Value[1], "lineChart1");
+                DisplayChartFromData(result[0].Value[2], "lineChart2");
+                DisplayChartFromData(result[0].Value[3], "lineChart3");
+                DisplayChartFromData(result[0].Value[4], "lineChart4");
+                DisplayChartFromData(result[0].Value[5], "lineChart5");
+                DisplayChartFromData(result[0].Value[6], "lineChart6");
+            }
+        });
+    }
+</script>
 
