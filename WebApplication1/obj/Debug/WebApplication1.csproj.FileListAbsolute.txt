@@ -363,3 +363,5 @@ D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\obj\Debug\WebApplication
 D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\obj\Debug\WebApplication1.pdb
 D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\bin\EPPlus.dll
 D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\bin\EPPlus.xml
+C:\Users\DDNS\Documents\GitHub\ASP_NanoComposite\WebApplication1\bin\EPPlus.dll
+C:\Users\DDNS\Documents\GitHub\ASP_NanoComposite\WebApplication1\bin\EPPlus.xml

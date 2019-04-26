@@ -5,4 +5,38 @@
 }
 
 <h2>Статистика</h2>
+<script type="text/javascript" src="~/Scripts/canvasjs.min.js"></script>
+<div class="col-md-12">
+    <div id="lineChart0" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+    <div id="lineChart1" class="col-md-6" style="width: 45%; height: 300px;display: inline-block;"></div>
+</div>
+<script>
+    function DisplayChartFromData(data, dstElement, name, type) {
+        dataArray = [];
 
+        for (var i = 0; i < data.x.length; i++) {
+            var d = new Object();
+            d.label = data.x[i];
+            d.y = data.y[i];
+            dataArray.push(d)
+        }
+        var chart = new CanvasJS.Chart(dstElement, {
+            theme: "light2",
+            zoomEnabled: true,
+            animationEnabled: true,
+            title: {
+                text: name
+            },
+            data: [
+                {
+                    type: type,
+                    dataPoints: dataArray
+                }
+            ]
+        });
+        chart.render();
+    }
+    var test1 = @Html.Raw(ViewBag.Subs);
+    DisplayChartFromData(@Html.Raw(ViewBag.Subs), "lineChart0", "Подписки", "column");
+    DisplayChartFromData(@Html.Raw(ViewBag.SubsDate), "lineChart1", "Смена подписок", "line");
+</script>

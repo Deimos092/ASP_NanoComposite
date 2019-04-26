@@ -50,6 +50,20 @@ namespace WebApplication1.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult ChangeSub(int subId)
+        {
+            string name = "";
+            using(WebApplication1.Models.ApplicationDbContext c = new WebApplication1.Models.ApplicationDbContext())
+            {
+                var user = c.Users.Where(x => x.UserName == User.Identity.Name).First();
+                user.SubModel = c.SubModel.Where(x => x.SubscriptionModelID == subId).First();
+                name = user.SubModel.Name;
+                c.SaveChanges();
+            }
+            return Json(name, JsonRequestBehavior.AllowGet);
+        }
+
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)

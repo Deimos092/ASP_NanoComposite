@@ -2,10 +2,9 @@
 @{
     ViewBag.Title = "Управление";
 }
-
 <h2>@ViewBag.Title.</h2>
-
 <p class="text-success">@ViewBag.StatusMessage</p>
+<script data-require="jquery" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <div>
     <h4>Изменение параметров учетной записи</h4>
     <hr />
@@ -28,73 +27,94 @@
             var user1 = c.Users.Where(x => x.UserName == User.Identity.Name).First();
             <dt>Подписка:</dt>
             <dd>
-                @user1.SubModel.Name
+                <a href="#" id="currentSub" data-toggle="modal" data-target="#exampleModal">@user1.SubModel.Name</a>
+                @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Launch demo modal
+                    </button>*@
             </dd>
             <dt>Дата окончания подписки:</dt>
             <dd>
                 @user1.SubscriptionEndDate
             </dd>
         }
-
-        @*<dt>Внешние имена входа:</dt>
-        <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Управление", "ManageLogins") ]
-        </dd>*@
-        @*
-        Номера телефонов можно использовать в качестве второго проверочного фактора для системы двухфакторной проверки подлинности.
-
-         В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
-            можно узнать, как настроить для этого приложения ASP.NET двухфакторную проверку подлинности с использованием SMS.
-
-         Настроив двухфакторную проверку подлинности, раскомментируйте следующий блок
-        *@
-        @*
-        <dt>Номер телефона:</dt>
-        <dd>
-            @(Model.PhoneNumber ?? "None")
-            @if (Model.PhoneNumber != null)
-            {
-                <br />
-                <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                {
-                    @Html.AntiForgeryToken()
-                    <text>[<input type="submit" value="Удалить" class="btn-link" />]</text>
-                }
-            }
-            else
-            {
-                <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-            }
-        </dd>
-        *@
-        @*<dt>Двухфакторная проверка подлинности:</dt>
-        <dd>
-            <p>
-                Поставщики двухфакторной проверки подлинности не настроены. В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
-                можно узнать, как настроить двухфакторную проверку подлинности для этого приложения ASP.NET.
-            </p>*@
-        @*@if (Model.TwoFactor)
-        {
-            using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <text>Включено
-                <input type="submit" value="Отключить" class="btn btn-link" />
-                </text>
-            }
-        }
-        else
-        {
-            using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <text>Отключено
-                <input type="submit" value="Включить" class="btn btn-link" />
-                </text>
-            }
-        }        </dd>*@
-
     </dl>
+</div>
+
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Подписки</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (WebApplication1.Models.ApplicationDbContext c = new WebApplication1.Models.ApplicationDbContext())
+            {
+                var user1 = c.Users.Where(x => x.UserName == User.Identity.Name).First();
+                var subs = c.SubModel.ToList();
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @for (int i = 0; i < 3; i++)
+                            {
+
+                                <div class="col-sm-4">
+                                    <h3>@subs[i].Name</h3>
+                                    <p><h4>Стоимость: @subs[i].SubCost</h4></p>
+                                    <p style="overflow-wrap: break-word">@subs[i].Description</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @for (int i = 0; i < 3; i++)
+                            {
+                            <div class="col-sm-4">
+                                @if (user1.SubModel.SubscriptionModelID==subs[i].SubscriptionModelID)
+                                {
+                                    <p><button type="button" id="@subs[i].SubscriptionModelID" class="btn btn-success disabled subbutton">Выбрана</button></p>
+                                }
+                                else
+                                {
+                                    <p><button type="button" id="@subs[i].SubscriptionModelID" class="btn btn-info subbutton">Выбрать</button></p>
+                                }
+
+                            </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+                <script>
+                    $('.subbutton').on('click', '', function (event) {
+                        if (!$(this).hasClass("disabled")) {
+                            var t = $(this);
+                            $.ajax({
+                                type: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: "{ subId:" + $(this).attr("id") + "}",
+                                url: "/Manage/ChangeSub",
+                                success: function (result) {
+                                    $('.subbutton.disabled').removeClass("btn-success");
+                                    $('.subbutton.disabled').addClass("btn-info");
+                                    $('.subbutton.disabled').removeClass("disabled");
+                                    t.addClass("disabled");
+                                    t.removeClass("btn-info");
+                                    t.addClass("btn-success");
+                                    $("#currentSub").text(result);
+                                }
+                            });
+                        }
+                        
+                    });
+                </script>
+            }
+        </div>
+    </div>
 </div>
