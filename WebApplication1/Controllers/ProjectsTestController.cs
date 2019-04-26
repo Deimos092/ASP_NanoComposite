@@ -19,11 +19,25 @@ namespace WebApplication1.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            string name = User.Identity.Name;
+            var user = db.Users.Where(x => x.UserName == name).First();
+            if (user.SubModel.SubscriptionModelID!=1 && user.SubscriptionEndDate<DateTime.Now)
+            {
+                user.SubscriptionStartDate = DateTime.Now;
+                user.SubModel = db.SubModel.Where(x => x.SubscriptionModelID == 1).First();
+                db.SaveChanges();
+            }
+            base.OnActionExecuting(filterContext);
+        }
+
         // GET: ProjectsTest
         public ActionResult Index()
         {
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).First();
             var temp = db.Projects.Where(u => u.Owner.Id==user.Id || db.Shares.Any(s=>s.Shared.Id==user.Id && u.ProjectID==s.ProjectToShare.ProjectID)).ToList();
+            ViewBag.User = user;
             return View(temp);
         }
         public bool isInProject(int projectID, bool edit)
@@ -106,11 +120,15 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
-                    var name = User.Identity.Name;
-                    project.Owner = db.Users.Where(u => u.UserName == name).First();
-                    project.ProjectDate = DateTime.Now;
-                    db.Projects.Add(project);
-                    db.SaveChanges();
+                var name = User.Identity.Name;
+                project.Owner = db.Users.Where(u => u.UserName == name).First();
+                if (project.Owner.SubModel.NumberOfProj>=db.Projects.Where(x=>x.Owner.Id==project.Owner.Id).Count())
+                {
+                    return RedirectToAction("Index");
+                }
+                project.ProjectDate = DateTime.Now;
+                db.Projects.Add(project);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -413,8 +431,14 @@ namespace WebApplication1.Controllers
         public JsonResult AddUserInProject(string user,bool isWrite , int project)
         {
             if (!isInProject(project,true)) return Json(false, JsonRequestBehavior.AllowGet);
-            dynamic ret = new ExpandoObject();
+
             var Project = db.Projects.Where(p => p.ProjectID == project).First();
+            if (Project.Owner.SubModel.NumberOfShared<=Project.SharedTo.Count)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
+            dynamic ret = new ExpandoObject();
             //
             //нужно для проверок на повторения, и на создателя проекта
             var usr = db.Users.Where(u => u.Email == user && u.EmailConfirmed == true && u.Id != Project.Owner.Id).ToList();

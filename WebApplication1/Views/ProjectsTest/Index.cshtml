@@ -7,9 +7,18 @@
 
 <h2>Проекты</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
+@if (@ViewBag.User.SubModel.NumberOfProj>Model.Count())
+{
+    <p>
+        @Html.ActionLink("Создать проект", "Create")
+    </p>
+    <div id="maxUsersInfo" class="alert alert-info"> Максимальное число проектов: @ViewBag.User.SubModel.NumberOfProj</div>
+}
+else
+{
+    <div id="maxUsersInfo" class="alert alert-danger"> Максимальное число проектов: @ViewBag.User.SubModel.NumberOfProj</div>
+}
 <table class="table col-md-5">
     <tr>
         <th>
