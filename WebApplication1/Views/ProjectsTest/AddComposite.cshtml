@@ -49,7 +49,7 @@
                 <a class="btn btn-default" style="width:100%" href="#" role="button" id="Remove">></a>
                 <input type="text" style="width:100%" class="focusify-enable form-control" id="percent" placeholder="100%">
             </div>
-            <div class="col-sm-5" style="overflow: auto; height:500px; max-height:fit-content">
+            <div class="col-sm-5" style="overflow: auto; height:500px; max-height:fit-content"> 
                 <table id="userTable1" class="table table-hover">
                     <tbody>
                         <tr><th>Название</th><th>Плот.</th><th>Эластич.</th><th>Тверд.</th><th>Теплоем.</th><th>Пред. силы</th><th>Теплопровод.</th><th>Тепл. расшир</th></tr>
@@ -60,7 +60,7 @@
                             var list = c.Shares.Where(w => w.ProjectToShare.ProjectID == t).ToList();
                             foreach (var share in list)
                             {
-                                foreach (var m in c.Materials.Where(m => m.Owner.Id == owner || m.Owner.Id == share.Shared.Id))
+                                foreach (var m in c.Materials.Where(o => o.Owner.Id == share.Shared.Id))
                                 {
                                     if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
                                     {
@@ -79,6 +79,26 @@
                                             <td hidden="hidden" class="PercentCol"><input type="checkbox" class="checkbox" /></td>
                                         </tr>
                                     }
+                                }
+                            }
+                            foreach (var m in c.Materials.Where(m => m.Owner.Id == owner))
+                            {
+                                if (!Model.UsedMaterials.Any(u => u.Material.MaterialID == m.MaterialID))
+                                {
+                                    <tr class="data">
+                                        <th scope="row">@m.Name</th>
+                                        <td class="idCol" hidden="hidden">@m.MaterialID</td>
+                                        <td>@m.Density</td>
+                                        <td>@m.Elasticity</td>
+                                        <td>@m.Hardness</td>
+                                        <td>@m.HeatCapacity</td>
+                                        <td>@m.StrengthBeyond</td>
+                                        <td>@m.ThermalConduct</td>
+                                        <td>@m.ThermalExpansion</td>
+                                        <td hidden="hidden" class="isMassPercentCol"><input type="checkbox" class="checkbox" /></td>
+                                        <td hidden="hidden" class="isMatrixCol"><input type="checkbox" class="checkbox" /></td>
+                                        <td hidden="hidden" class="PercentCol"><input type="checkbox" class="checkbox" /></td>
+                                    </tr>
                                 }
                             }
                         }

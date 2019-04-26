@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using WebApplication1.Models;
 using Newtonsoft.Json;
 using System.Dynamic;
+using OfficeOpenXml;
+using System.IO;
 
 namespace WebApplication1.Controllers
 {
@@ -480,6 +482,12 @@ namespace WebApplication1.Controllers
             }
             return Json(ret, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Вызов расчетов
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="porosity"></param>
+        /// <returns></returns>
         public JsonResult Calculate(int id, decimal porosity)
         {
             Composite TmpComposite = db.Composits.Where(x => x.CompositeID == id).First();
@@ -493,6 +501,13 @@ namespace WebApplication1.Controllers
             }
             return Json(ret, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Блок для расчетов
+        /// </summary>
+        /// <param name="KeyNames"></param>
+        /// <param name="porosity"></param>
+        /// <param name="TmpComposite"></param>
+        /// <returns></returns>
         public decimal CalculateParamsForData(string KeyNames, decimal porosity, Composite TmpComposite)
         {
             Dictionary<string, decimal> CalcResult = new Dictionary<string, decimal>();
@@ -557,6 +572,89 @@ namespace WebApplication1.Controllers
                 return CalcResult[KeyNames] + property[0] * percent * property[1];//Для него немного по другому считается поэтому условие
             else
                 return CalcResult[KeyNames] + property[0] * percent;
+        }
+
+        /// <summary>
+        /// подготовка файла для скачивания
+        /// </summary>
+        /// <param name="compId"></param>
+        /// <returns></returns>
+        public JsonResult PrepareFile(int compId)
+        {
+            ExcelPackage excel = new ExcelPackage();
+            var composite = db.Composits.Where(c => c.CompositeID == compId).First();
+            excel.Workbook.Worksheets.Add($"Композит");
+            //excel logic
+            var headerRowComposite = new List<string[]>
+            {
+                new string[] { "Название", "Эластичность", "Фактор Когезии", "Твердость", "Пористость", "Прочность", "Теплопроводность"}
+            };
+            var materialHeader = new List<string[]>
+            {
+                new string[] {"Название","Твердость","Эластичность", "Предел силы","Плотность","Теплоемкость","Теплопроводность","Тепловое расширение"}
+            };
+            var headerRangeComposite = "A2:" + Char.ConvertFromUtf32(headerRowComposite[0].Length + 64) + "2";
+            var compositeWorksheet = excel.Workbook.Worksheets["Композит"];
+            compositeWorksheet.Cells[headerRangeComposite].LoadFromArrays(headerRowComposite);
+            compositeWorksheet.Cells[1, 1].Value = $"Композит";
+            compositeWorksheet.Cells[1, 1].Style.Font.Size = 14;
+            compositeWorksheet.Cells[1, 1].Style.Font.Bold = true;
+            
+            compositeWorksheet.Cells[2,1,2,7].AutoFitColumns();
+            var compositeCellsData = new List<object[]>()
+            {
+                new object[] {composite.Name, composite.Elasticity, composite.FactorKogezia, composite.Hardness, composite.Porosity, composite.Strength, composite.ThermalConduct}
+            };
+            compositeWorksheet.Cells[3, 1].LoadFromArrays(compositeCellsData);
+            compositeWorksheet.Cells[2,1,3,7].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Medium);
+            compositeWorksheet.Cells[4, 1].Value = $"Материалы в композите";
+            compositeWorksheet.Cells[4, 1].Style.Font.Size = 14;
+            compositeWorksheet.Cells[4, 1].Style.Font.Bold = true;
+            compositeWorksheet.Cells[5,1,5,8].LoadFromArrays(materialHeader);
+            compositeWorksheet.Cells[5, 1, 5, 8].AutoFitColumns();
+            var dataMaterials = new List<object[]>();
+            foreach (var material in composite.UsedMaterials)
+            {
+                dataMaterials.Add(new object[] { material.Material.Name, material.Material.Hardness, material.Material.Elasticity, material.Material.StrengthBeyond,
+                    material.Material.Density, material.Material.HeatCapacity, material.Material.ThermalConduct, material.Material.ThermalExpansion, });
+            }
+            compositeWorksheet.Cells[6,1].LoadFromArrays(dataMaterials);
+
+            compositeWorksheet.Cells[5, 1, 6 + dataMaterials.Count - 1, 8].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Medium);
+            //excel logic
+            string fileName = $"Композит_{composite.Name}.xlsx";
+            string handle = Guid.NewGuid().ToString();
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                excel.SaveAs(memoryStream);
+                memoryStream.Position = 0;
+                TempData[handle] = memoryStream.ToArray();
+            }
+            return new JsonResult()
+            {
+                Data = new { FileGuid = handle, FileName = fileName }
+            };
+        }
+        /// <summary>
+        /// Скачивание файла
+        /// </summary>
+        /// <param name="fileGuid"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public virtual ActionResult Download(string fileGuid, string fileName)
+        {
+            if (TempData[fileGuid] != null)
+            {
+                byte[] data = TempData[fileGuid] as byte[];
+                return File(data, "application/vnd.ms-excel", fileName);
+            }
+            else
+            {
+                // Problem - Log the error, generate a blank file,
+                //           redirect to another controller action - whatever fits with your application
+                return new EmptyResult();
+            }
         }
     }
 }

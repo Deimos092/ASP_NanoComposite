@@ -361,3 +361,5 @@ D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\obj\Debug\WebApplication
 D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\obj\Debug\WebApplication1.csproj.CopyComplete
 D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\obj\Debug\WebApplication1.dll
 D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\obj\Debug\WebApplication1.pdb
+D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\bin\EPPlus.dll
+D:\LabsUniver\3_2kurs\ASP_NanoComposite\WebApplication1\bin\EPPlus.xml

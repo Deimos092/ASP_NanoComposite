@@ -38,8 +38,24 @@
                 location.href = "/ProjectsTest/AddComposite?projectId=" +@Model.ProjectID+"&compositeId=" + compId;
             }
         });
+        $('#download').on('click', '', function (event) {
+            var tr = $('#userTable .selected').closest("tr");
+            if (tr.attr('id')) {
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ compId: Number(tr.attr('id')) }),
+                    url: "/ProjectsTest/PrepareFile",
+                    success: function (data) {
+                        var response = data;
+                        window.location = '/ProjectsTest/Download?fileGuid=' + response.FileGuid
+                            + '&filename=' + response.FileName;
+                    }
+                });
+            }
+        });
         $('#buttonDel').on('click', '', function (event) {
-            
             var tr = $('#userTable .selected').closest("tr");
             if (tr.length == 1) {
                 var compId = tr.attr('id');
