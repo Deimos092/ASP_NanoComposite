@@ -45,12 +45,14 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Сохранить" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
+    <div id="maxUsersInfo" class="alert alert-info"> Максимальное число участников проекта: @Model.Owner.SubModel.NumberOfShared</div>
     <div class="col-md-12">
+        
         <div class="col-md-10">
             <table id="userTable" class="table table-hover">
                 <tr><th>#</th><th>Mail</th><th>Редактирование</th></tr>
@@ -63,13 +65,25 @@
             </table>
         </div>
         <script>
+            var currentUserCount = @Model.SharedTo.Count
+            var maxUsers = @Model.Owner.SubModel.NumberOfShared
+            function changeButtonState() {
+                if (currentUserCount >= maxUsers) {
+                    $('#buttonAddU').addClass("disabled");
+                    $('#maxUsersInfo').removeClass("alert-info");
+                    $('#maxUsersInfo').addClass("alert-danger");
+                } else {
+                    $('#buttonAddU').removeClass("disabled");
+                    $('#maxUsersInfo').removeClass("alert-danger");
+                    $('#maxUsersInfo').addClass("alert-info");
+                }
+            }
             $('#userTable').on('click', 'tbody tr', function (event) {
                 $(this).addClass('selected').siblings().removeClass('selected');
             });
         </script>
         <div class="col-md-2">
             <a class="btn btn-default" id="buttonAddU" style="width:100%" href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button">Добавить</a>
-            @*@Html.ActionLink("Добавить", "AddComposite", "ProjectsTest", new { projectId = Model.ProjectID }, new { @class = "btn btn-default", @style = "width:100%", @role = "button" })*@
             <a class="btn btn-default" id="buttonDelU" style="width:100%" href="#" role="button">Удалить</a>
             <script>
                 $('#buttonDelU').on('click', '', function (event) {
@@ -83,10 +97,13 @@
                             url: "/ProjectsTest/DeleteUserFromProject",
                             success: function (res) {
                                 tr.remove();
+                                currentUserCount--;
+                                changeButtonState();
                             }
                         });
                     }
                 });
+                changeButtonState();
             </script>
         </div>
     </div>
@@ -143,6 +160,10 @@
                 <button type="button" id="addUser" class="btn btn-primary">Save changes</button>
                 <script>
                     $('#addUser').on('click', '', function (event) {
+                    if (currentUserCount + 1 > maxUsers) {
+                        alert('Неудалось добавить пользователя!');
+                        return;
+                    }
                     var uMail = $('#mta').val();
                     $.ajax({
                         type: 'POST',
@@ -152,6 +173,8 @@
                         success: function (ret) {
                             if (ret[0].Value) {
                                 $('#userTable tr:last').after('<tr id="' + ret[1].Value + '"><td>' + ret[2].Value + '</td><td>' + uMail + '</td><td>' + ret[3].Value + '</td></tr>');
+                                currentUserCount++;
+                                changeButtonState();
                             }
                             else {
                                 $('#closeModal').trigger('click');

@@ -16,7 +16,7 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        <h4>Composite</h4>
+        <h4>Композит</h4>
         <hr />
         <div class="col-md-12">
             <div class="col-sm-6" style="overflow: auto">
@@ -135,7 +135,7 @@
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
-                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Название")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -143,7 +143,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Porosity, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Porosity, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Пористость")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Porosity, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Porosity, "", new { @class = "text-danger" })
@@ -151,7 +151,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Elasticity, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Elasticity, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Упругость")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Elasticity, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Elasticity, "", new { @class = "text-danger" })
@@ -159,7 +159,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Hardness, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Hardness, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Твердость")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Hardness, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Hardness, "", new { @class = "text-danger" })
@@ -167,7 +167,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.FactorKogezia, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.FactorKogezia, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Факт. когезии")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.FactorKogezia, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.FactorKogezia, "", new { @class = "text-danger" })
@@ -175,7 +175,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Strength, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Strength, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Прочность")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Strength, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Strength, "", new { @class = "text-danger" })
@@ -183,7 +183,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.ThermalConduct, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.ThermalConduct, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Теплопроводность")
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.ThermalConduct, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.ThermalConduct, "", new { @class = "text-danger" })
@@ -193,7 +193,7 @@
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="hidden" id="json" name="json" value="test123" /> 
-                    <input type="submit" id="submit" value="Create" class="btn btn-default" />
+                    <input type="submit" id="submit" value="Сохранить" class="btn btn-default" />
                 </div>
             </div>
             <script>
@@ -226,7 +226,7 @@
     }
 
     <div>
-        @Html.ActionLink("Back to List", "Index")
+        @Html.ActionLink("Назад", "Index")
     </div>
 </body>
 </html>

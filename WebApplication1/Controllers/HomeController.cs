@@ -14,17 +14,18 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
+
         public ActionResult Index()
         {
-            using (ApplicationDbContext c = new ApplicationDbContext())
-            {
-                c.Database.CommandTimeout = 600;
-                c.Database.CreateIfNotExists();
-                if (!c.SubModel.Any(x=>x.SubscriptionModelID==1))
-                {
-                    c.SubModel.Add(new SubscriptionModel() { Name = "Бесплатная", Description = "123", NumberOfProj = 1, NumberOfShared = 0, SubCost = 0, SubscriptionModelID = 1 });
-                    c.SaveChanges();
-                }
+            //using (ApplicationDbContext c = new ApplicationDbContext())
+            //{
+            //    c.Database.CommandTimeout = 600;
+            //    c.Database.CreateIfNotExists();
+            //    if (!c.SubModel.Any(x=>x.SubscriptionModelID==1))
+            //    {
+            //        c.SubModel.Add(new SubscriptionModel() { Name = "Бесплатная", Description = "123", NumberOfProj = 1, NumberOfShared = 0, SubCost = 0, SubscriptionModelID = 1 });
+            //        c.SaveChanges();
+            //    }
                 //var co = new Composite();
                 //Material m = new Material() { Density = 0 };
                 //Material m2 = new Material() { Density = 12 };
@@ -47,7 +48,7 @@ namespace WebApplication1.Controllers
                 ////Material m = new Material() { Density = 1 };
                 ////c.Composits.Where(k => k.CompositeID == 1).First().Materials.Add(m);
                 //c.SaveChanges();
-            }
+            //}
             return View();
         }
         
