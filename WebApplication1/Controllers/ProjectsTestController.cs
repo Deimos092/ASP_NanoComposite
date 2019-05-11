@@ -40,6 +40,12 @@ namespace WebApplication1.Controllers
             ViewBag.User = user;
             return View(temp);
         }
+        /// <summary>
+        /// Находится ли в проекте чел
+        /// </summary>
+        /// <param name="projectID"></param>
+        /// <param name="edit"></param>
+        /// <returns></returns>
         public bool isInProject(int projectID, bool edit)
         {
             if (db.Projects.Any(x=>x.Owner.UserName== User.Identity.Name && x.ProjectID==projectID))
@@ -62,6 +68,11 @@ namespace WebApplication1.Controllers
             }
             return false;
         }
+        /// <summary>
+        /// Проверка на владельца
+        /// </summary>
+        /// <param name="materialId"></param>
+        /// <returns></returns>
         public bool isMaterialOwner(int materialId)
         {
             if (db.Materials.Any(x => x.MaterialID == materialId && x.Owner.UserName == User.Identity.Name))
@@ -70,6 +81,12 @@ namespace WebApplication1.Controllers
             }
             return false;
         }
+        /// <summary>
+        /// Проверка на верификацию
+        /// </summary>
+        /// <param name="compId"></param>
+        /// <param name="edit"></param>
+        /// <returns></returns>
         public bool isVerified(int compId, bool edit)
         {
             var t = db.Projects.Where(p => p.UsedComposits.Any(x => x.CompositeID == compId)).First();
@@ -112,17 +129,15 @@ namespace WebApplication1.Controllers
         }
 
         // POST: ProjectsTest/Create
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProjectID,ProjectName,ProjectDescription,ProjectDate")] Project project)
+        public ActionResult Create([Bind(Include = "ProjectID,ProjectName")] Project project)
         {
             if (ModelState.IsValid)
             {
                 var name = User.Identity.Name;
                 project.Owner = db.Users.Where(u => u.UserName == name).First();
-                if (project.Owner.SubModel.NumberOfProj>=db.Projects.Where(x=>x.Owner.Id==project.Owner.Id).Count())
+                if (project.Owner.SubModel.NumberOfProj <= db.Projects.Where(x=>x.Owner.Id==project.Owner.Id).Count())
                 {
                     return RedirectToAction("Index");
                 }
@@ -152,8 +167,6 @@ namespace WebApplication1.Controllers
         }
 
         // POST: ProjectsTest/Edit/5
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ProjectID,ProjectName,ProjectDescription,ProjectDate")] Project project)
@@ -191,10 +204,13 @@ namespace WebApplication1.Controllers
         // POST: ProjectsTest/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        // Перед удалением самого проекта надо удалять все что с ним связано
         public ActionResult DeleteConfirmed(int id)
         {
             if (!isInProject(id,true)) return RedirectToAction("Index");
             Project project = db.Projects.Find(id);
+            project.SharedTo.Clear();
+            project.UsedComposits.Clear();
             db.Projects.Remove(project);
             db.SaveChanges();
             return RedirectToAction("Index");
